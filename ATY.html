@@ -148,6 +148,31 @@
             box-shadow: 0 5px 15px rgba(0,0,0,0.2);
             border: none;
         }
+
+        #falling-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 50;
+        }
+
+        .falling-img {
+            position: absolute;
+            top: -10%;
+            opacity: 0.85;
+            will-change: transform;
+            animation-name: fall;
+            animation-timing-function: linear;
+            animation-iteration-count: infinite;
+        }
+
+        @keyframes fall {
+            0% { transform: translateY(-10vh) rotate(0deg); }
+            100% { transform: translateY(110vh) rotate(360deg); }
+        }
         
         @media (min-width: 768px) {
             h1 { font-size: 3rem; }
@@ -157,7 +182,7 @@
 </head>
 <body>
     <!-- Âm thanh đơn giản - dùng MP3 trực tiếp -->
-    <audio id="music" loop>
+    <audio id="music" loop preload="auto" playsinline autoplay>
         <source src="https://raw.githubusercontent.com/LEVUONG47/KYNIEM/main/Tram%20D%C3%BCng%20Ch%C3%A2n%20(WM%20Remix)-Jack%20-%20J97.mp3" type="audio/mpeg">
     </audio>
     
@@ -172,6 +197,8 @@
         <div id="count-2" class="countdown-number">2</div>
         <div id="count-1" class="countdown-number">1</div>
     </div>
+
+    <div id="falling-container"></div>
     
     <!-- Main Content -->
     <div id="main-content">
@@ -254,10 +281,28 @@
         let isScrolling = false;
         let isMusicPlaying = false;
         let userTouched = false;
+        const FALL_IMAGE_URLS = [
+            'https://raw.githubusercontent.com/LEVUONG47/KYNIEM/main/desktop-wallpaper-1920x1200-px-1985-80and039s-album-android-asia-covers-cyborgs-dean-fiction-girl-robot-robots-roger-s-entertainment-movies.jpg'
+        ];
         
         // ========== KHỞI TẠO ==========
+        function isSupportedMobile() {
+            const ua = navigator.userAgent;
+            const isAndroid = /Android/i.test(ua);
+            const isIOS = /iPhone|iPad|iPod/i.test(ua);
+            return isAndroid || isIOS;
+        }
+
         function init() {
             console.log("Khởi động web kỷ niệm...");
+            if (!isSupportedMobile()) {
+                document.body.innerHTML = '';
+                const msg = document.createElement('div');
+                msg.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:#0b0b1a;color:#fff;text-align:center;padding:20px;';
+                msg.textContent = 'Chỉ hỗ trợ điện thoại Android & iOS';
+                document.body.appendChild(msg);
+                return;
+            }
             
             // Chuẩn bị âm thanh
             const music = document.getElementById('music');
@@ -270,12 +315,6 @@
             // Setup sự kiện
             setupEvents();
             
-            // Auto scroll sau 2 giây
-            setTimeout(() => {
-                if (!userTouched) {
-                    startAutoScroll();
-                }
-            }, 2000);
         }
         
         // ========== COUNTDOWN ==========
@@ -314,11 +353,13 @@
                                 
                                 // Thử phát nhạc
                                 tryPlayMusic();
+
+                                startFallingImages();
                                 
                                 // Tự động cuộn
                                 setTimeout(() => {
                                     autoScrollToNext();
-                                }, 2000);
+                                }, 5000);
                                 
                             }, 500);
                             
@@ -341,11 +382,7 @@
                 isMusicPlaying = true;
                 musicIcon.textContent = '⏸️';
             }).catch(error => {
-                console.log("Cần user tương tác để phát nhạc");
                 musicIcon.textContent = '▶️';
-                
-                // Hiển thị hướng dẫn
-                showTapMessage();
             });
         }
         
@@ -363,7 +400,6 @@
                     isMusicPlaying = true;
                 }).catch(error => {
                     console.log("Lỗi phát nhạc:", error);
-                    showTapMessage();
                 });
             }
         }
@@ -431,14 +467,6 @@
                 userTouched = true;
             });
             
-            // Chạm màn hình để kích hoạt âm thanh
-            document.addEventListener('click', function() {
-                if (!userTouched) {
-                    userTouched = true;
-                    tryPlayMusic();
-                }
-            }, { once: true });
-            
             // Chạm để bật/tắt auto scroll
             let lastTap = 0;
             document.addEventListener('click', function(e) {
@@ -470,39 +498,23 @@
             items.forEach(item => observer.observe(item));
         }
         
-        // ========== THÔNG BÁO ==========
-        function showTapMessage() {
-            const msg = document.createElement('div');
-            msg.innerHTML = `
-                <div style="
-                    position: fixed;
-                    bottom: 100px;
-                    right: 20px;
-                    background: #e6396a;
-                    color: white;
-                    padding: 12px 18px;
-                    border-radius: 25px;
-                    z-index: 1000;
-                    font-size: 0.9rem;
-                    max-width: 200px;
-                    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-                ">
-                    👆 Nhấn nút nhạc để nghe
-                </div>
-            `;
-            
-            document.body.appendChild(msg);
-            
-            setTimeout(() => {
-                if (msg.parentNode) {
-                    msg.remove();
-                }
-            }, 3000);
-        }
-        
-        // ========== KIỂM TRA MOBILE ==========
-        function isMobile() {
-            return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        function startFallingImages() {
+            const container = document.getElementById('falling-container');
+            function spawn() {
+                const img = document.createElement('img');
+                const src = FALL_IMAGE_URLS[Math.floor(Math.random() * FALL_IMAGE_URLS.length)];
+                img.src = src;
+                img.className = 'falling-img';
+                const size = 30 + Math.random() * 60;
+                img.style.width = size + 'px';
+                img.style.left = Math.random() * 100 + '%';
+                img.style.animationDuration = (6 + Math.random() * 6) + 's';
+                img.style.animationDelay = (-Math.random() * 6) + 's';
+                container.appendChild(img);
+                setTimeout(() => { if (img.parentNode) img.remove(); }, 20000);
+            }
+            for (let i = 0; i < 15; i++) spawn();
+            setInterval(spawn, 800);
         }
         
         // ========== KHỞI CHẠY ==========
@@ -511,53 +523,6 @@
             document.addEventListener('DOMContentLoaded', init);
         } else {
             init();
-        }
-        
-        // Thêm overlay cho mobile
-        if (isMobile()) {
-            window.addEventListener('load', function() {
-                setTimeout(() => {
-                    const overlay = document.createElement('div');
-                    overlay.innerHTML = `
-                        <div style="
-                            position: fixed;
-                            top: 0;
-                            left: 0;
-                            width: 100%;
-                            height: 100%;
-                            background: rgba(230, 57, 106, 0.95);
-                            display: flex;
-                            flex-direction: column;
-                            justify-content: center;
-                            align-items: center;
-                            z-index: 9999;
-                            color: white;
-                            text-align: center;
-                        ">
-                            <div style="font-size: 3rem; margin-bottom: 20px;">🎵</div>
-                            <h2 style="margin-bottom: 10px;">Chạm màn hình</h2>
-                            <p style="padding: 0 20px;">
-                                Chạm vào màn hình để kích hoạt âm thanh và bắt đầu trải nghiệm
-                            </p>
-                        </div>
-                    `;
-                    
-                    document.body.appendChild(overlay);
-                    
-                    overlay.addEventListener('click', function() {
-                        userTouched = true;
-                        tryPlayMusic();
-                        overlay.remove();
-                    });
-                    
-                    // Tự động ẩn sau 3 giây
-                    setTimeout(() => {
-                        if (overlay.parentNode) {
-                            overlay.remove();
-                        }
-                    }, 3000);
-                }, 500);
-            });
         }
     </script>
 </body>
