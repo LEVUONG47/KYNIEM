@@ -93,8 +93,6 @@
             color: rgba(255, 255, 255, 0.7);
             margin-top: 1.5rem;
             font-weight: 300;
-            opacity: 0;
-            transition: opacity 0.5s ease;
         }
         
         #main-content {
@@ -358,7 +356,7 @@
             display: flex;
         }
         
-        .auto-scroll-indicator {
+        .scroll-indicator {
             position: fixed;
             bottom: 80px;
             right: 20px;
@@ -373,19 +371,12 @@
             font-size: 1.3rem;
             z-index: 99;
             box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-            animation: bounce 2s infinite;
             cursor: pointer;
             display: none;
         }
         
-        .auto-scroll-indicator.active {
+        .scroll-indicator.active {
             display: flex;
-        }
-        
-        @keyframes bounce {
-            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
-            40% { transform: translateY(-10px); }
-            60% { transform: translateY(-5px); }
         }
         
         @media (min-width: 400px) {
@@ -401,19 +392,19 @@
     </style>
 </head>
 <body>
-    <!-- Audio Element -->
+    <!-- Audio Element với nhạc từ GitHub -->
     <audio id="background-music" loop preload="auto">
         <source src="https://raw.githubusercontent.com/LEVUONG47/KYNIEM/main/Tram%20D%C3%BCng%20Ch%C3%A2n%20(WM%20Remix)-Jack%20-%20J97.mp3" type="audio/mpeg">
     </audio>
     
     <!-- Music Control -->
-    <div class="music-control" id="music-control" onclick="toggleMusic()">
-        <i class="fas fa-pause"></i>
+    <div class="music-control" id="music-control">
+        <i class="fas fa-play"></i>
     </div>
     
-    <!-- Auto Scroll Indicator -->
-    <div class="auto-scroll-indicator" id="auto-scroll-indicator" onclick="toggleAutoScroll()">
-        <i class="fas fa-pause"></i>
+    <!-- Scroll Indicator -->
+    <div class="scroll-indicator" id="scroll-indicator">
+        <i class="fas fa-chevron-down"></i>
     </div>
     
     <!-- Countdown Screen -->
@@ -549,28 +540,25 @@
         // ========== BIẾN TOÀN CỤC ==========
         let music = document.getElementById('background-music');
         let musicControl = document.getElementById('music-control');
-        let autoScrollIndicator = document.getElementById('auto-scroll-indicator');
+        let scrollIndicator = document.getElementById('scroll-indicator');
         let isMusicPlaying = false;
-        let isAutoScrolling = true;
+        let isAutoScrolling = false;
         let autoScrollInterval = null;
-        let userHasInteracted = false;
+        let userTouched = false;
         
         // ========== KHỞI TẠO ==========
         function init() {
-            console.log("Khởi động web...");
-            
-            // Bắt đầu countdown NGAY
-            startCountdown();
-            
-            // Đăng ký sự kiện chạm
-            setupTouchEvents();
+            console.log("Đang khởi động...");
             
             // Chuẩn bị nhạc
             music.volume = 0.7;
+            music.load();
             
-            // Đảm bảo âm thanh có thể phát
-            document.body.addEventListener('click', enableAudio, { once: true });
-            document.body.addEventListener('touchstart', enableAudio, { once: true });
+            // Đăng ký sự kiện
+            setupTouchEvents();
+            
+            // Bắt đầu countdown
+            startCountdown();
         }
         
         // ========== COUNTDOWN ==========
@@ -579,51 +567,49 @@
             const count3 = document.getElementById('count-3');
             const count2 = document.getElementById('count-2');
             const count1 = document.getElementById('count-1');
-            const subtitle = document.querySelector('.countdown-subtitle');
+            const mainContent = document.getElementById('main-content');
             
-            // Countdown: 3 -> 2 -> 1 (mỗi số 1 giây)
+            // Countdown: 3 (1s) -> 2 (1s) -> 1 (1s)
             setTimeout(() => {
                 count3.classList.add('active');
+                console.log("3");
                 
                 setTimeout(() => {
                     count3.classList.remove('active');
                     count2.classList.add('active');
+                    console.log("2");
                     
                     setTimeout(() => {
                         count2.classList.remove('active');
                         count1.classList.add('active');
+                        console.log("1");
                         
-                        // SAU KHI ĐẾM XONG 1:
+                        // NGAY SAU KHI ĐẾM XONG 1:
                         setTimeout(() => {
-                            // 1. PHÁT NHẠC NGAY
-                            playMusicNow();
+                            // 1. Thử phát nhạc
+                            tryPlayMusic();
                             
-                            // 2. Hiển thị subtitle
-                            subtitle.style.opacity = '1';
+                            // 2. Chuyển sang main content
+                            countdownScreen.style.opacity = '0';
                             
-                            // 3. Chuyển sang nội dung chính NGAY
                             setTimeout(() => {
-                                countdownScreen.style.opacity = '0';
+                                countdownScreen.style.display = 'none';
+                                mainContent.style.opacity = '1';
                                 
+                                // 3. Hiện nút điều khiển
+                                musicControl.classList.add('active');
+                                scrollIndicator.classList.add('active');
+                                
+                                // 4. TỰ ĐỘNG CUỘN NGAY
                                 setTimeout(() => {
-                                    countdownScreen.style.display = 'none';
-                                    document.getElementById('main-content').style.opacity = '1';
-                                    
-                                    // 4. HIỆN NÚT ĐIỀU KHIỂN
-                                    musicControl.classList.add('active');
-                                    autoScrollIndicator.classList.add('active');
-                                    
-                                    // 5. BẮT ĐẦU TỰ ĐỘNG CUỘN NGAY LẬP TỨC
-                                    setTimeout(() => {
-                                        startAutoScrollNow();
-                                    }, 100); // Chỉ chờ 0.1 giây
-                                    
-                                    // 6. Khởi tạo animations
-                                    initAnimations();
-                                    
-                                }, 300);
-                            }, 500);
-                        }, 300);
+                                    startAutoScroll();
+                                }, 500); // Bắt đầu sau 0.5 giây
+                                
+                                // 5. Animation cho timeline
+                                initAnimations();
+                                
+                            }, 300);
+                        }, 500); // Chờ 0.5 giây sau số 1
                         
                     }, 1000); // 1 giây cho số 1
                 }, 1000); // 1 giây cho số 2
@@ -631,27 +617,19 @@
         }
         
         // ========== ÂM THANH ==========
-        function enableAudio() {
-            userHasInteracted = true;
-            console.log("Đã kích hoạt âm thanh");
+        function tryPlayMusic() {
+            console.log("Thử phát nhạc...");
             
-            // Thử phát nhạc nếu chưa phát
-            if (!isMusicPlaying) {
-                playMusicNow();
-            }
-        }
-        
-        function playMusicNow() {
-            console.log("Đang thử phát nhạc...");
-            
-            // Tạo context âm thanh
+            // Tạo một context âm thanh để kích hoạt
             const AudioContext = window.AudioContext || window.webkitAudioContext;
             if (AudioContext) {
-                const audioContext = new AudioContext();
-                
-                // Resume context khi user tương tác
-                if (audioContext.state === 'suspended') {
-                    audioContext.resume();
+                try {
+                    const audioContext = new AudioContext();
+                    if (audioContext.state === 'suspended') {
+                        audioContext.resume();
+                    }
+                } catch (e) {
+                    console.log("Không thể tạo AudioContext:", e);
                 }
             }
             
@@ -660,18 +638,17 @@
             
             if (playPromise !== undefined) {
                 playPromise.then(() => {
-                    console.log("🎵 Nhạc đang phát!");
+                    console.log("✅ Nhạc đang phát!");
                     isMusicPlaying = true;
                     musicControl.innerHTML = '<i class="fas fa-pause"></i>';
                 }).catch(error => {
-                    console.log("❌ Lỗi phát nhạc:", error);
+                    console.log("❌ Lỗi phát nhạc:", error.name);
                     
-                    // Hiển thị nút play
+                    // Hiển thị nút play cho user
                     musicControl.innerHTML = '<i class="fas fa-play"></i>';
-                    musicControl.classList.add('active');
                     
-                    // Hiển thị thông báo
-                    showMusicHelp();
+                    // Hiển thị hướng dẫn
+                    showAudioHelp();
                 });
             }
         }
@@ -689,69 +666,72 @@
                         isMusicPlaying = true;
                     }).catch(error => {
                         console.log("Lỗi khi bật nhạc:", error);
-                        showMusicHelp();
+                        showAudioHelp();
                     });
                 }
             }
         }
         
-        // ========== TỰ ĐỘNG CUỘN NGAY LẬP TỨC ==========
-        function startAutoScrollNow() {
-            console.log("🚀 Bắt đầu tự động cuộn NGAY...");
+        // ========== TỰ ĐỘNG CUỘN ==========
+        function startAutoScroll() {
+            console.log("🔄 Bắt đầu tự động cuộn...");
+            isAutoScrolling = true;
             
             // Dừng interval cũ nếu có
             if (autoScrollInterval) {
                 clearInterval(autoScrollInterval);
             }
             
-            // Tốc độ cuộn
-            const scrollSpeed = 1; // pixel mỗi frame
-            let lastScrollTime = Date.now();
+            // Tốc độ cuộn (pixel mỗi frame)
+            const scrollSpeed = 0.8;
+            let lastTime = performance.now();
             const targetFPS = 60;
-            const frameInterval = 1000 / targetFPS; // ~16.67ms
+            const frameInterval = 1000 / targetFPS;
             
-            // Bắt đầu auto-scroll NGAY
-            autoScrollInterval = setInterval(() => {
-                if (isAutoScrolling) {
-                    const currentTime = Date.now();
-                    const elapsed = currentTime - lastScrollTime;
+            function scrollStep(currentTime) {
+                if (!isAutoScrolling) {
+                    return;
+                }
+                
+                const deltaTime = currentTime - lastTime;
+                
+                if (deltaTime >= frameInterval) {
+                    // Cuộn xuống
+                    window.scrollBy({
+                        top: scrollSpeed,
+                        behavior: 'instant'
+                    });
                     
-                    // Chỉ cuộn nếu đủ thời gian giữa các frame
-                    if (elapsed >= frameInterval) {
-                        // Cuộn xuống
-                        window.scrollBy({
-                            top: scrollSpeed,
-                            behavior: 'instant'
-                        });
-                        
-                        lastScrollTime = currentTime - (elapsed % frameInterval);
-                        
-                        // Kiểm tra nếu đã đến cuối trang
-                        if ((window.innerHeight + window.pageYOffset) >= document.body.offsetHeight - 10) {
-                            console.log("✅ Đã đến cuối trang");
-                            autoScrollIndicator.innerHTML = '<i class="fas fa-check"></i>';
-                            setTimeout(() => {
-                                autoScrollIndicator.classList.remove('active');
-                            }, 3000);
-                            clearInterval(autoScrollInterval);
-                        }
+                    lastTime = currentTime - (deltaTime % frameInterval);
+                    
+                    // Kiểm tra nếu đã đến cuối trang
+                    if ((window.innerHeight + window.pageYOffset) >= document.body.offsetHeight - 50) {
+                        console.log("✅ Đã đến cuối trang");
+                        scrollIndicator.innerHTML = '<i class="fas fa-check"></i>';
+                        setTimeout(() => {
+                            scrollIndicator.classList.remove('active');
+                        }, 2000);
+                        isAutoScrolling = false;
+                        return;
                     }
                 }
-            }, 16); // ~60 FPS
+                
+                // Tiếp tục animation loop
+                requestAnimationFrame(scrollStep);
+            }
+            
+            // Bắt đầu animation loop
+            requestAnimationFrame(scrollStep);
         }
         
         function toggleAutoScroll() {
             isAutoScrolling = !isAutoScrolling;
             
             if (isAutoScrolling) {
-                autoScrollIndicator.innerHTML = '<i class="fas fa-pause"></i>';
-                startAutoScrollNow();
+                scrollIndicator.innerHTML = '<i class="fas fa-pause"></i>';
+                startAutoScroll();
             } else {
-                autoScrollIndicator.innerHTML = '<i class="fas fa-play"></i>';
-                if (autoScrollInterval) {
-                    clearInterval(autoScrollInterval);
-                    autoScrollInterval = null;
-                }
+                scrollIndicator.innerHTML = '<i class="fas fa-play"></i>';
             }
         }
         
@@ -766,7 +746,7 @@
                         setTimeout(() => {
                             entry.target.style.opacity = '1';
                             entry.target.style.transform = 'translateX(0)';
-                        }, 100);
+                        }, 200);
                     }
                 });
             }, {
@@ -782,93 +762,209 @@
             const heart = document.querySelector('.heart-main');
             if (heart) {
                 heart.addEventListener('click', () => {
-                    heart.style.transform = 'rotate(45deg) scale(1.1)';
+                    heart.style.animation = 'none';
                     setTimeout(() => {
-                        heart.style.transform = 'rotate(45deg) scale(1)';
-                    }, 200);
+                        heart.style.animation = 'heartBeat 2s ease-in-out infinite';
+                    }, 10);
                 });
             }
         }
         
-        // ========== SỰ KIỆN CHẠM ==========
+        // ========== SỰ KIỆN TOUCH ==========
         function setupTouchEvents() {
-            // Cho phép chạm bất kỳ đâu để kích hoạt âm thanh
-            document.addEventListener('touchstart', function() {
-                if (!userHasInteracted) {
-                    enableAudio();
+            // Đánh dấu user đã chạm
+            document.addEventListener('touchstart', function touchHandler() {
+                userTouched = true;
+                console.log("👆 User đã chạm màn hình");
+                
+                // Thử phát nhạc nếu chưa phát
+                if (!isMusicPlaying) {
+                    tryPlayMusic();
                 }
+                
+                // Chỉ cần một lần chạm
+                document.removeEventListener('touchstart', touchHandler);
             }, { once: true });
             
-            // Double tap để bật/tắt auto-scroll
+            // Click cũng tính là touch
+            document.addEventListener('click', function clickHandler() {
+                if (!userTouched) {
+                    userTouched = true;
+                    console.log("🖱️ User đã click");
+                    
+                    if (!isMusicPlaying) {
+                        tryPlayMusic();
+                    }
+                }
+                document.removeEventListener('click', clickHandler);
+            }, { once: true });
+            
+            // Double tap để toggle auto-scroll
             let lastTap = 0;
             document.addEventListener('touchend', function(e) {
                 const currentTime = new Date().getTime();
                 const tapLength = currentTime - lastTap;
                 
                 if (tapLength < 300 && tapLength > 0) {
-                    // Double tap detected
                     toggleAutoScroll();
-                    e.preventDefault();
                 }
-                
                 lastTap = currentTime;
             });
+            
+            // Nút điều khiển
+            musicControl.addEventListener('click', toggleMusic);
+            scrollIndicator.addEventListener('click', toggleAutoScroll);
         }
         
-        // ========== THÔNG BÁO TRỢ GIÚP ==========
-        function showMusicHelp() {
-            const helpDiv = document.createElement('div');
-            helpDiv.innerHTML = `
+        // ========== HIỂN THỊ HƯỚNG DẪN ==========
+        function showAudioHelp() {
+            // Tạo overlay giúp đỡ
+            const helpOverlay = document.createElement('div');
+            helpOverlay.innerHTML = `
                 <div style="
                     position: fixed;
-                    top: 50%;
-                    left: 50%;
-                    transform: translate(-50%, -50%);
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
                     background: rgba(0,0,0,0.9);
-                    color: white;
-                    padding: 20px;
-                    border-radius: 15px;
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: center;
+                    align-items: center;
                     z-index: 10000;
+                    color: white;
                     text-align: center;
-                    max-width: 300px;
-                    box-shadow: 0 0 20px rgba(255,255,255,0.3);
+                    padding: 20px;
                 ">
-                    <h3 style="color: #ff85a2; margin-bottom: 10px;">🔊 Bật Âm Thanh</h3>
-                    <p style="margin-bottom: 15px;">Nhấn vào nút nhạc ở góc dưới bên phải để nghe nhạc</p>
-                    <button onclick="this.parentElement.remove()" style="
+                    <div style="
+                        background: var(--primary);
+                        width: 80px;
+                        height: 80px;
+                        border-radius: 50%;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        font-size: 2rem;
+                        margin-bottom: 20px;
+                    ">
+                        🔊
+                    </div>
+                    <h3 style="color: #ff85a2; margin-bottom: 10px;">Bật Âm Thanh</h3>
+                    <p style="margin-bottom: 20px; max-width: 300px;">
+                        Nhấn vào nút nhạc ở góc dưới bên phải để nghe nhạc
+                    </p>
+                    <button onclick="this.parentElement.parentElement.remove()" style="
                         background: #e6396a;
                         color: white;
                         border: none;
-                        padding: 8px 20px;
-                        border-radius: 20px;
+                        padding: 10px 30px;
+                        border-radius: 25px;
+                        font-size: 1rem;
                         cursor: pointer;
-                    ">Đã hiểu</button>
+                    ">
+                        Đã hiểu
+                    </button>
                 </div>
             `;
             
-            document.body.appendChild(helpDiv);
+            document.body.appendChild(helpOverlay);
             
             // Tự động ẩn sau 5 giây
             setTimeout(() => {
-                if (helpDiv.parentElement) {
-                    helpDiv.remove();
+                if (helpOverlay.parentElement) {
+                    helpOverlay.remove();
                 }
             }, 5000);
         }
         
-        // ========== KHỞI CHẠY ==========
-        // Bắt đầu ngay khi DOM sẵn sàng
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', init);
-        } else {
-            init();
+        // ========== KIỂM TRA ANDROID/IOS ==========
+        function detectPlatform() {
+            const userAgent = navigator.userAgent.toLowerCase();
+            
+            if (/android/.test(userAgent)) {
+                console.log("📱 Android device detected");
+                return 'android';
+            } else if (/iphone|ipad|ipod/.test(userAgent)) {
+                console.log("🍎 iOS device detected");
+                return 'ios';
+            } else {
+                console.log("💻 Desktop or other device");
+                return 'other';
+            }
         }
         
-        // Thêm sự kiện để kích hoạt âm thanh trên iOS
+        // ========== TỰ ĐỘNG KÍCH HOẠT CHO MOBILE ==========
+        function autoActivateForMobile() {
+            const platform = detectPlatform();
+            
+            if (platform === 'android' || platform === 'ios') {
+                console.log("Tự động kích hoạt cho mobile...");
+                
+                // Thêm một lớp overlay yêu cầu chạm
+                const touchOverlay = document.createElement('div');
+                touchOverlay.innerHTML = `
+                    <div style="
+                        position: fixed;
+                        top: 0;
+                        left: 0;
+                        width: 100%;
+                        height: 100%;
+                        background: rgba(230, 57, 106, 0.9);
+                        display: flex;
+                        flex-direction: column;
+                        justify-content: center;
+                        align-items: center;
+                        z-index: 9999;
+                        color: white;
+                        text-align: center;
+                    ">
+                        <div style="font-size: 3rem; margin-bottom: 20px;">👆</div>
+                        <h2 style="margin-bottom: 10px;">Chạm để bắt đầu</h2>
+                        <p style="max-width: 300px; margin-bottom: 30px;">
+                            Chạm vào màn hình để kích hoạt âm thanh và trải nghiệm đầy đủ
+                        </p>
+                    </div>
+                `;
+                
+                document.body.appendChild(touchOverlay);
+                
+                // Khi user chạm, kích hoạt âm thanh
+                touchOverlay.addEventListener('click', function() {
+                    userTouched = true;
+                    tryPlayMusic();
+                    touchOverlay.remove();
+                });
+                
+                // Tự động ẩn sau 3 giây
+                setTimeout(() => {
+                    if (touchOverlay.parentElement) {
+                        touchOverlay.remove();
+                    }
+                }, 3000);
+            }
+        }
+        
+        // ========== KHỞI CHẠY ==========
+        // Khởi động khi DOM ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', function() {
+                init();
+                autoActivateForMobile();
+            });
+        } else {
+            init();
+            autoActivateForMobile();
+        }
+        
+        // Thêm sự kiện để kích hoạt âm thanh
         window.addEventListener('load', function() {
+            // Thử kích hoạt âm thanh sau khi trang load
             setTimeout(() => {
-                // Tự động kích hoạt âm thanh sau khi load
-                document.body.click();
+                if (!userTouched) {
+                    // Simulate một click để kích hoạt âm thanh
+                    document.body.click();
+                }
             }, 1000);
         });
     </script>
