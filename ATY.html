@@ -53,7 +53,7 @@
             justify-content: center;
             align-items: center;
             z-index: 1000;
-            transition: opacity 1s ease;
+            transition: opacity 0.5s ease;
         }
         
         .countdown-container {
@@ -69,12 +69,6 @@
             margin-bottom: 2rem;
             color: var(--primary-light);
             letter-spacing: 4px;
-            opacity: 0;
-            animation: revealTitle 1s ease forwards 0.3s;
-        }
-        
-        @keyframes revealTitle {
-            to { opacity: 1; }
         }
         
         .countdown-number {
@@ -86,7 +80,7 @@
             color: var(--primary-light);
             opacity: 0;
             transform: scale(0.5);
-            transition: all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transition: all 0.5s ease;
         }
         
         .countdown-number.active {
@@ -100,11 +94,7 @@
             margin-top: 1.5rem;
             font-weight: 300;
             opacity: 0;
-            animation: fadeIn 1s ease forwards 4s; /* Đổi từ 3s lên 4s */
-        }
-        
-        @keyframes fadeIn {
-            to { opacity: 1; }
+            transition: opacity 0.5s ease;
         }
         
         #main-content {
@@ -114,7 +104,7 @@
             overflow-y: auto;
             -webkit-overflow-scrolling: touch;
             opacity: 0;
-            transition: opacity 1s ease;
+            transition: opacity 0.5s ease;
         }
         
         .main-container {
@@ -136,8 +126,6 @@
             margin-bottom: 1rem;
             color: var(--primary);
             line-height: 1.2;
-            opacity: 0;
-            animation: slideUp 0.5s ease forwards 0.3s;
         }
         
         .anniversary-subtitle {
@@ -145,8 +133,6 @@
             color: var(--text-light);
             margin-bottom: 0.5rem;
             font-weight: 300;
-            opacity: 0;
-            animation: slideUp 0.5s ease forwards 0.5s;
         }
         
         .date-display {
@@ -160,16 +146,10 @@
             margin-top: 1.5rem;
             border: 1px solid rgba(230, 57, 106, 0.1);
             box-shadow: 0 5px 15px rgba(230, 57, 106, 0.1);
-            opacity: 0;
-            animation: slideUp 0.5s ease forwards 0.7s;
             width: 100%;
             max-width: 350px;
             margin-left: auto;
             margin-right: auto;
-        }
-        
-        @keyframes slideUp {
-            to { opacity: 1; }
         }
         
         .heart-center {
@@ -192,8 +172,6 @@
             border-radius: 15px;
             box-shadow: 0 10px 30px rgba(230, 57, 106, 0.3);
             animation: heartBeat 2s ease-in-out infinite;
-            opacity: 0;
-            animation: heartBeat 2s ease-in-out infinite, fadeIn 0.5s ease forwards 1s;
         }
         
         @keyframes heartBeat {
@@ -223,8 +201,6 @@
         
         .timeline-section {
             margin: 4rem 0;
-            opacity: 0;
-            animation: fadeIn 0.5s ease forwards 1.5s;
         }
         
         .timeline-title {
@@ -256,12 +232,12 @@
             position: relative;
             margin-bottom: 3rem;
             width: calc(100% - 40px);
-            left: 40px !important;
-            padding-left: 30px !important;
-            text-align: left !important;
+            left: 40px;
+            padding-left: 30px;
+            text-align: left;
             opacity: 0;
             transform: translateX(-20px);
-            transition: all 0.6s ease;
+            transition: all 0.5s ease;
         }
         
         .timeline-content {
@@ -325,8 +301,6 @@
             box-shadow: 0 5px 15px rgba(230, 57, 106, 0.1);
             border: 1px solid rgba(230, 57, 106, 0.1);
             position: relative;
-            opacity: 0;
-            animation: fadeIn 0.5s ease forwards 2s;
         }
         
         .message-title {
@@ -358,8 +332,6 @@
             color: var(--text-light);
             font-size: 0.9rem;
             border-top: 1px solid rgba(230, 57, 106, 0.1);
-            opacity: 0;
-            animation: fadeIn 0.5s ease forwards 2.5s;
         }
         
         .music-control {
@@ -430,7 +402,7 @@
 </head>
 <body>
     <!-- Audio Element -->
-    <audio id="background-music" loop>
+    <audio id="background-music" loop preload="auto">
         <source src="https://raw.githubusercontent.com/LEVUONG47/KYNIEM/main/Tram%20D%C3%BCng%20Ch%C3%A2n%20(WM%20Remix)-Jack%20-%20J97.mp3" type="audio/mpeg">
     </audio>
     
@@ -574,172 +546,198 @@
     </div>
     
     <script>
-        // ========== KHỞI TẠO BIẾN ==========
+        // ========== BIẾN TOÀN CỤC ==========
         let music = document.getElementById('background-music');
         let musicControl = document.getElementById('music-control');
         let autoScrollIndicator = document.getElementById('auto-scroll-indicator');
         let isMusicPlaying = false;
         let isAutoScrolling = true;
-        let autoScrollAnimationId = null;
-        let lastScrollTime = 0;
-        const SCROLL_FPS = 60; // ⬅️ ĐÃ SỬA: TĂNG LÊN 60 FPS
-        const SCROLL_INTERVAL = 1000 / SCROLL_FPS; // ~16.67ms mỗi frame
+        let autoScrollInterval = null;
+        let userHasInteracted = false;
         
-        // ========== HÀM KHỞI ĐỘNG ==========
+        // ========== KHỞI TẠO ==========
         function init() {
-            console.log("Bắt đầu khởi động...");
+            console.log("Khởi động web...");
             
-            // Bắt đầu đếm ngược NGAY LẬP TỨC
+            // Bắt đầu countdown NGAY
             startCountdown();
             
-            // Đăng ký sự kiện chạm toàn màn hình
+            // Đăng ký sự kiện chạm
             setupTouchEvents();
             
-            // Chuẩn bị phát nhạc
-            music.volume = 0.5;
-            music.load();
+            // Chuẩn bị nhạc
+            music.volume = 0.7;
+            
+            // Đảm bảo âm thanh có thể phát
+            document.body.addEventListener('click', enableAudio, { once: true });
+            document.body.addEventListener('touchstart', enableAudio, { once: true });
         }
         
-        // ========== ĐẾM NGƯỢC BÌNH THƯỜNG (1 GIÂY MỖI SỐ) ==========
+        // ========== COUNTDOWN ==========
         function startCountdown() {
             const countdownScreen = document.getElementById('countdown-screen');
             const count3 = document.getElementById('count-3');
             const count2 = document.getElementById('count-2');
             const count1 = document.getElementById('count-1');
+            const subtitle = document.querySelector('.countdown-subtitle');
             
-            // COUNTDOWN BÌNH THƯỜNG: 3 -> 2 -> 1 (mỗi số 1 giây)
+            // Countdown: 3 -> 2 -> 1 (mỗi số 1 giây)
             setTimeout(() => {
                 count3.classList.add('active');
-                console.log("Số 3");
                 
                 setTimeout(() => {
                     count3.classList.remove('active');
                     count2.classList.add('active');
-                    console.log("Số 2");
                     
                     setTimeout(() => {
                         count2.classList.remove('active');
                         count1.classList.add('active');
-                        console.log("Số 1");
                         
                         // SAU KHI ĐẾM XONG 1:
                         setTimeout(() => {
-                            // 1. PHÁT NHẠC
-                            playMusicImmediately();
+                            // 1. PHÁT NHẠC NGAY
+                            playMusicNow();
                             
-                            // 2. HIỆN NỘI DUNG CHÍNH
-                            countdownScreen.style.opacity = '0';
+                            // 2. Hiển thị subtitle
+                            subtitle.style.opacity = '1';
                             
+                            // 3. Chuyển sang nội dung chính NGAY
                             setTimeout(() => {
-                                countdownScreen.style.display = 'none';
-                                document.getElementById('main-content').style.opacity = '1';
+                                countdownScreen.style.opacity = '0';
                                 
-                                // 3. HIỆN NÚT ĐIỀU KHIỂN
-                                musicControl.classList.add('active');
-                                autoScrollIndicator.classList.add('active');
-                                
-                                // 4. BẮT ĐẦU TỰ ĐỘNG CUỘN NGAY VỚI 60 FPS
                                 setTimeout(() => {
-                                    startAutoScroll();
-                                }, 100);
-                                
-                                // 5. BẮT ĐẦU ANIMATION
-                                initAnimations();
-                                
+                                    countdownScreen.style.display = 'none';
+                                    document.getElementById('main-content').style.opacity = '1';
+                                    
+                                    // 4. HIỆN NÚT ĐIỀU KHIỂN
+                                    musicControl.classList.add('active');
+                                    autoScrollIndicator.classList.add('active');
+                                    
+                                    // 5. BẮT ĐẦU TỰ ĐỘNG CUỘN NGAY LẬP TỨC
+                                    setTimeout(() => {
+                                        startAutoScrollNow();
+                                    }, 100); // Chỉ chờ 0.1 giây
+                                    
+                                    // 6. Khởi tạo animations
+                                    initAnimations();
+                                    
+                                }, 300);
                             }, 500);
                         }, 300);
                         
-                    }, 1000); // ⬅️ ĐÃ SỬA: 1 giây cho số 1
-                }, 1000); // ⬅️ ĐÃ SỬA: 1 giây cho số 2
-            }, 1000); // ⬅️ ĐÃ SỬA: 1 giây cho số 3
+                    }, 1000); // 1 giây cho số 1
+                }, 1000); // 1 giây cho số 2
+            }, 1000); // 1 giây cho số 3
         }
         
-        // ========== PHÁT NHẠC NGAY LẬP TỨC ==========
-        function playMusicImmediately() {
-            console.log("Đang phát nhạc...");
+        // ========== ÂM THANH ==========
+        function enableAudio() {
+            userHasInteracted = true;
+            console.log("Đã kích hoạt âm thanh");
             
-            // Phát nhạc NGAY
-            music.play()
-                .then(() => {
-                    console.log("Nhạc đang phát!");
+            // Thử phát nhạc nếu chưa phát
+            if (!isMusicPlaying) {
+                playMusicNow();
+            }
+        }
+        
+        function playMusicNow() {
+            console.log("Đang thử phát nhạc...");
+            
+            // Tạo context âm thanh
+            const AudioContext = window.AudioContext || window.webkitAudioContext;
+            if (AudioContext) {
+                const audioContext = new AudioContext();
+                
+                // Resume context khi user tương tác
+                if (audioContext.state === 'suspended') {
+                    audioContext.resume();
+                }
+            }
+            
+            // Thử phát nhạc
+            const playPromise = music.play();
+            
+            if (playPromise !== undefined) {
+                playPromise.then(() => {
+                    console.log("🎵 Nhạc đang phát!");
                     isMusicPlaying = true;
                     musicControl.innerHTML = '<i class="fas fa-pause"></i>';
-                })
-                .catch(error => {
-                    console.log("Lỗi phát nhạc:", error);
+                }).catch(error => {
+                    console.log("❌ Lỗi phát nhạc:", error);
                     
-                    // Nếu lỗi, cho phép chạm để phát
+                    // Hiển thị nút play
                     musicControl.innerHTML = '<i class="fas fa-play"></i>';
+                    musicControl.classList.add('active');
                     
                     // Hiển thị thông báo
-                    showTapToPlayMessage();
+                    showMusicHelp();
                 });
+            }
         }
         
         function toggleMusic() {
             if (isMusicPlaying) {
                 music.pause();
                 musicControl.innerHTML = '<i class="fas fa-play"></i>';
+                isMusicPlaying = false;
             } else {
-                music.play()
-                    .then(() => {
+                const playPromise = music.play();
+                if (playPromise !== undefined) {
+                    playPromise.then(() => {
                         musicControl.innerHTML = '<i class="fas fa-pause"></i>';
-                    })
-                    .catch(error => {
+                        isMusicPlaying = true;
+                    }).catch(error => {
                         console.log("Lỗi khi bật nhạc:", error);
-                        showTapToPlayMessage();
+                        showMusicHelp();
                     });
+                }
             }
-            isMusicPlaying = !isMusicPlaying;
         }
         
-        // ========== TỰ ĐỘNG CUỘN TRANG VỚI 60 FPS ==========
-        function startAutoScroll() {
-            if (autoScrollAnimationId) {
-                cancelAnimationFrame(autoScrollAnimationId);
+        // ========== TỰ ĐỘNG CUỘN NGAY LẬP TỨC ==========
+        function startAutoScrollNow() {
+            console.log("🚀 Bắt đầu tự động cuộn NGAY...");
+            
+            // Dừng interval cũ nếu có
+            if (autoScrollInterval) {
+                clearInterval(autoScrollInterval);
             }
             
-            console.log(`Bắt đầu tự động cuộn với ${SCROLL_FPS} FPS...`);
+            // Tốc độ cuộn
+            const scrollSpeed = 1; // pixel mỗi frame
+            let lastScrollTime = Date.now();
+            const targetFPS = 60;
+            const frameInterval = 1000 / targetFPS; // ~16.67ms
             
-            let lastTime = performance.now();
-            const scrollSpeed = 0.8; // Tốc độ cuộn (pixel mỗi frame)
-            
-            function autoScroll(currentTime) {
-                if (!isAutoScrolling) {
-                    autoScrollAnimationId = null;
-                    return;
-                }
-                
-                const deltaTime = currentTime - lastTime;
-                
-                // Chỉ cuộn nếu đủ thời gian giữa các frame
-                if (deltaTime >= SCROLL_INTERVAL) {
-                    // Cuộn xuống từ từ với requestAnimationFrame
-                    window.scrollBy({
-                        top: scrollSpeed,
-                        behavior: 'instant' // Dùng 'instant' cho mượt nhất
-                    });
+            // Bắt đầu auto-scroll NGAY
+            autoScrollInterval = setInterval(() => {
+                if (isAutoScrolling) {
+                    const currentTime = Date.now();
+                    const elapsed = currentTime - lastScrollTime;
                     
-                    lastTime = currentTime - (deltaTime % SCROLL_INTERVAL);
-                    
-                    // Nếu đã cuộn đến cuối, dừng lại
-                    if ((window.innerHeight + window.pageYOffset) >= document.body.offsetHeight - 50) {
-                        console.log("Đã đến cuối trang");
-                        autoScrollIndicator.innerHTML = '<i class="fas fa-check"></i>';
-                        setTimeout(() => {
-                            autoScrollIndicator.classList.remove('active');
-                        }, 2000);
-                        autoScrollAnimationId = null;
-                        return;
+                    // Chỉ cuộn nếu đủ thời gian giữa các frame
+                    if (elapsed >= frameInterval) {
+                        // Cuộn xuống
+                        window.scrollBy({
+                            top: scrollSpeed,
+                            behavior: 'instant'
+                        });
+                        
+                        lastScrollTime = currentTime - (elapsed % frameInterval);
+                        
+                        // Kiểm tra nếu đã đến cuối trang
+                        if ((window.innerHeight + window.pageYOffset) >= document.body.offsetHeight - 10) {
+                            console.log("✅ Đã đến cuối trang");
+                            autoScrollIndicator.innerHTML = '<i class="fas fa-check"></i>';
+                            setTimeout(() => {
+                                autoScrollIndicator.classList.remove('active');
+                            }, 3000);
+                            clearInterval(autoScrollInterval);
+                        }
                     }
                 }
-                
-                // Tiếp tục animation loop
-                autoScrollAnimationId = requestAnimationFrame(autoScroll);
-            }
-            
-            // Bắt đầu animation loop
-            autoScrollAnimationId = requestAnimationFrame(autoScroll);
+            }, 16); // ~60 FPS
         }
         
         function toggleAutoScroll() {
@@ -747,26 +745,28 @@
             
             if (isAutoScrolling) {
                 autoScrollIndicator.innerHTML = '<i class="fas fa-pause"></i>';
-                startAutoScroll();
+                startAutoScrollNow();
             } else {
                 autoScrollIndicator.innerHTML = '<i class="fas fa-play"></i>';
-                if (autoScrollAnimationId) {
-                    cancelAnimationFrame(autoScrollAnimationId);
-                    autoScrollAnimationId = null;
+                if (autoScrollInterval) {
+                    clearInterval(autoScrollInterval);
+                    autoScrollInterval = null;
                 }
             }
         }
         
         // ========== ANIMATIONS ==========
         function initAnimations() {
-            // Hiệu ứng cho timeline items khi scroll
+            // Animation cho timeline items
             const timelineItems = document.querySelectorAll('.timeline-item');
             
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach((entry) => {
                     if (entry.isIntersecting) {
-                        entry.target.style.opacity = '1';
-                        entry.target.style.transform = 'translateX(0)';
+                        setTimeout(() => {
+                            entry.target.style.opacity = '1';
+                            entry.target.style.transform = 'translateX(0)';
+                        }, 100);
                     }
                 });
             }, {
@@ -778,91 +778,99 @@
                 observer.observe(item);
             });
             
-            // Hiệu ứng khi chạm vào trái tim
+            // Click vào trái tim
             const heart = document.querySelector('.heart-main');
             if (heart) {
                 heart.addEventListener('click', () => {
-                    heart.style.animation = 'none';
+                    heart.style.transform = 'rotate(45deg) scale(1.1)';
                     setTimeout(() => {
-                        heart.style.animation = 'heartBeat 2s ease-in-out infinite';
-                    }, 10);
+                        heart.style.transform = 'rotate(45deg) scale(1)';
+                    }, 200);
                 });
             }
         }
         
         // ========== SỰ KIỆN CHẠM ==========
         function setupTouchEvents() {
-            // Cho phép chạm bất kỳ đâu để phát nhạc (nếu chưa phát)
-            document.addEventListener('touchstart', function firstTouch() {
-                console.log("Người dùng đã chạm màn hình");
-                
-                // Chỉ phát nhạc nếu chưa phát
-                if (!isMusicPlaying) {
-                    playMusicImmediately();
+            // Cho phép chạm bất kỳ đâu để kích hoạt âm thanh
+            document.addEventListener('touchstart', function() {
+                if (!userHasInteracted) {
+                    enableAudio();
                 }
-                
-                // Chỉ cần chạm một lần
-                document.removeEventListener('touchstart', firstTouch);
             }, { once: true });
             
-            // Cho phép chạm để bật/tắt auto-scroll
-            document.addEventListener('dblclick', function() {
-                toggleAutoScroll();
+            // Double tap để bật/tắt auto-scroll
+            let lastTap = 0;
+            document.addEventListener('touchend', function(e) {
+                const currentTime = new Date().getTime();
+                const tapLength = currentTime - lastTap;
+                
+                if (tapLength < 300 && tapLength > 0) {
+                    // Double tap detected
+                    toggleAutoScroll();
+                    e.preventDefault();
+                }
+                
+                lastTap = currentTime;
             });
         }
         
-        // ========== THÔNG BÁO ==========
-        function showTapToPlayMessage() {
-            const message = document.createElement('div');
-            message.innerHTML = '👆 Chạm vào nút nhạc để nghe';
-            message.style.cssText = `
-                position: fixed;
-                bottom: 150px;
-                right: 20px;
-                background: var(--primary);
-                color: white;
-                padding: 10px 15px;
-                border-radius: 20px;
-                font-size: 0.9rem;
-                z-index: 1000;
-                box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-                max-width: 150px;
-                text-align: center;
-                animation: fadeInOut 3s ease;
+        // ========== THÔNG BÁO TRỢ GIÚP ==========
+        function showMusicHelp() {
+            const helpDiv = document.createElement('div');
+            helpDiv.innerHTML = `
+                <div style="
+                    position: fixed;
+                    top: 50%;
+                    left: 50%;
+                    transform: translate(-50%, -50%);
+                    background: rgba(0,0,0,0.9);
+                    color: white;
+                    padding: 20px;
+                    border-radius: 15px;
+                    z-index: 10000;
+                    text-align: center;
+                    max-width: 300px;
+                    box-shadow: 0 0 20px rgba(255,255,255,0.3);
+                ">
+                    <h3 style="color: #ff85a2; margin-bottom: 10px;">🔊 Bật Âm Thanh</h3>
+                    <p style="margin-bottom: 15px;">Nhấn vào nút nhạc ở góc dưới bên phải để nghe nhạc</p>
+                    <button onclick="this.parentElement.remove()" style="
+                        background: #e6396a;
+                        color: white;
+                        border: none;
+                        padding: 8px 20px;
+                        border-radius: 20px;
+                        cursor: pointer;
+                    ">Đã hiểu</button>
+                </div>
             `;
             
-            // Thêm CSS cho animation
-            const style = document.createElement('style');
-            style.textContent = `
-                @keyframes fadeInOut {
-                    0% { opacity: 0; transform: translateY(10px); }
-                    20% { opacity: 1; transform: translateY(0); }
-                    80% { opacity: 1; transform: translateY(0); }
-                    100% { opacity: 0; transform: translateY(-10px); }
-                }
-            `;
-            document.head.appendChild(style);
+            document.body.appendChild(helpDiv);
             
-            document.body.appendChild(message);
-            
-            // Tự động xóa sau 3 giây
+            // Tự động ẩn sau 5 giây
             setTimeout(() => {
-                message.remove();
-                style.remove();
-            }, 3000);
+                if (helpDiv.parentElement) {
+                    helpDiv.remove();
+                }
+            }, 5000);
         }
         
         // ========== KHỞI CHẠY ==========
-        // Khởi động ngay khi DOM sẵn sàng
+        // Bắt đầu ngay khi DOM sẵn sàng
         if (document.readyState === 'loading') {
             document.addEventListener('DOMContentLoaded', init);
         } else {
             init();
         }
         
-        // Đảm bảo âm thanh có thể phát trên mobile
-        document.body.addEventListener('touchstart', function() {}, false);
-        document.body.addEventListener('click', function() {}, false);
+        // Thêm sự kiện để kích hoạt âm thanh trên iOS
+        window.addEventListener('load', function() {
+            setTimeout(() => {
+                // Tự động kích hoạt âm thanh sau khi load
+                document.body.click();
+            }, 1000);
+        });
     </script>
 </body>
 </html>
