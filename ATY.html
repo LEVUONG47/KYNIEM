@@ -314,7 +314,7 @@
             justify-content: center;
             position: relative;
             z-index: 2;
-            backdrop-filter: blur(5px);
+            backdrop-filter: blur(2px);
         }
         
         .section-bg {
@@ -323,10 +323,10 @@
             left: 0;
             width: 100%;
             height: 100%;
-            opacity: 0.1;
+            opacity: 0.08;
             z-index: -1;
-            background: radial-gradient(circle at 30% 30%, rgba(230, 57, 106, 0.2) 0%, transparent 50%),
-                        radial-gradient(circle at 70% 70%, rgba(255, 133, 162, 0.2) 0%, transparent 50%);
+            background: radial-gradient(circle at 30% 30%, rgba(230, 57, 106, 0.3) 0%, transparent 50%),
+                        radial-gradient(circle at 70% 70%, rgba(255, 133, 162, 0.3) 0%, transparent 50%);
         }
         
         h1 {
@@ -441,7 +441,7 @@
             opacity: 0;
             transform: translateY(30px);
             transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-            backdrop-filter: blur(20px);
+            backdrop-filter: blur(10px);
             position: relative;
             overflow: hidden;
             border: 1px solid rgba(255, 255, 255, 0.5);
@@ -513,7 +513,7 @@
                 0 20px 60px rgba(0,0,0,0.15),
                 0 12px 35px rgba(230, 57, 106, 0.15),
                 inset 0 0 0 1px rgba(255, 255, 255, 0.8);
-            backdrop-filter: blur(20px);
+            backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.5);
             position: relative;
             overflow: hidden;
@@ -557,7 +557,7 @@
             z-index: 2;
             background: rgba(255, 255, 255, 0.7);
             margin-top: 2rem;
-            backdrop-filter: blur(10px);
+            backdrop-filter: blur(5px);
             border-top: 1px solid rgba(230, 57, 106, 0.1);
         }
         
@@ -573,40 +573,44 @@
             display: inline-block;
         }
         
-        /* HIỆU ỨNG TRÁI TIM RƠI TRONG MAIN CONTENT */
+        /* HIỆU ỨNG TRÁI TIM RƠI TRONG MAIN CONTENT - RÕ HƠN */
         .falling-heart-main {
             position: fixed;
-            width: 35px;
-            height: 35px;
+            width: 45px;
+            height: 45px;
             background: linear-gradient(135deg, #e6396a 0%, #ff85a2 100%);
             transform: rotate(45deg);
-            opacity: 0.7;
-            z-index: 1; /* Đặt z-index thấp để không đè lên nội dung */
-            box-shadow: 0 5px 25px rgba(230, 57, 106, 0.6),
-                        inset 0 2px 10px rgba(255, 255, 255, 0.3);
+            opacity: 0.85;
+            z-index: 1;
+            box-shadow: 
+                0 8px 30px rgba(230, 57, 106, 0.8),
+                0 4px 15px rgba(255, 133, 162, 0.6),
+                inset 0 3px 12px rgba(255, 255, 255, 0.4);
             animation: mainHeartFall linear infinite;
-            border-radius: 4px;
+            border-radius: 5px;
             pointer-events: none;
+            filter: brightness(1.1) drop-shadow(0 5px 15px rgba(230, 57, 106, 0.5));
         }
         
         .falling-heart-main::before,
         .falling-heart-main::after {
             content: '';
-            width: 35px;
-            height: 35px;
+            width: 45px;
+            height: 45px;
             background: linear-gradient(135deg, #e6396a 0%, #ff85a2 100%);
             border-radius: 50%;
             position: absolute;
+            box-shadow: inset 0 2px 8px rgba(255, 255, 255, 0.3);
         }
         
         .falling-heart-main::before { 
-            top: -17.5px; 
+            top: -22.5px; 
             left: 0; 
         }
         
         .falling-heart-main::after { 
             top: 0; 
-            left: -17.5px; 
+            left: -22.5px; 
         }
         
         @keyframes mainHeartFall {
@@ -615,10 +619,10 @@
                 opacity: 0;
             }
             10% { 
-                opacity: 0.7;
+                opacity: 0.85;
             }
             90% { 
-                opacity: 0.7;
+                opacity: 0.85;
             }
             100% { 
                 transform: rotate(45deg) translateY(100vh) rotate(720deg);
@@ -626,35 +630,64 @@
             }
         }
         
-        /* Cũng thêm ảnh rơi */
+        /* ẢNH RƠI RÕ HƠN */
         .falling-image-main {
             position: fixed;
-            width: 50px;
-            height: 50px;
-            border-radius: 10px;
+            width: 65px;
+            height: 65px;
+            border-radius: 12px;
             object-fit: cover;
-            opacity: 0.6;
-            filter: brightness(1.1) contrast(1.1) blur(0.5px);
+            opacity: 0.8;
+            filter: brightness(1.2) contrast(1.2) saturate(1.3) drop-shadow(0 8px 20px rgba(0, 0, 0, 0.4));
             animation: mainImageFall linear infinite;
             z-index: 1;
             pointer-events: none;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+            box-shadow: 
+                0 10px 30px rgba(0, 0, 0, 0.4),
+                0 5px 15px rgba(230, 57, 106, 0.3),
+                inset 0 0 0 1px rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.3);
         }
         
         @keyframes mainImageFall {
             0% { 
-                transform: translateY(-100px) rotate(0deg);
+                transform: translateY(-100px) rotate(0deg) scale(0.9);
                 opacity: 0;
             }
             10% { 
-                opacity: 0.6;
+                opacity: 0.8;
+                transform: translateY(0) rotate(5deg) scale(1);
             }
             90% { 
-                opacity: 0.6;
+                opacity: 0.8;
             }
             100% { 
-                transform: translateY(100vh) rotate(360deg);
+                transform: translateY(100vh) rotate(360deg) scale(0.9);
                 opacity: 0;
+            }
+        }
+        
+        /* HIỆU ỨNG LẤP LÁNH TRÊN TRÁI TIM */
+        .heart-sparkle {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: white;
+            border-radius: 50%;
+            opacity: 0;
+            filter: blur(2px);
+            animation: sparkleFlash 1.5s infinite;
+            pointer-events: none;
+        }
+        
+        @keyframes sparkleFlash {
+            0%, 100% { 
+                transform: scale(0.3);
+                opacity: 0;
+            }
+            50% { 
+                transform: scale(0.8);
+                opacity: 0.9;
             }
         }
         
@@ -662,28 +695,30 @@
             position: fixed;
             bottom: 25px;
             right: 25px;
-            width: 60px;
-            height: 60px;
+            width: 65px;
+            height: 65px;
             background: linear-gradient(135deg, #e6396a 0%, #ff85a2 100%);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
-            font-size: 1.5rem;
+            font-size: 1.6rem;
             z-index: 100;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.3),
-                        0 0 20px rgba(230, 57, 106, 0.4);
+            box-shadow: 
+                0 12px 30px rgba(0,0,0,0.4),
+                0 0 25px rgba(230, 57, 106, 0.5);
             border: none;
             cursor: pointer;
             transition: all 0.3s ease;
-            border: 3px solid rgba(255, 255, 255, 0.3);
+            border: 3px solid rgba(255, 255, 255, 0.4);
         }
         
         .music-btn:hover {
             transform: scale(1.1);
-            box-shadow: 0 15px 30px rgba(0,0,0,0.4),
-                        0 0 30px rgba(230, 57, 106, 0.6);
+            box-shadow: 
+                0 18px 40px rgba(0,0,0,0.5),
+                0 0 35px rgba(230, 57, 106, 0.7);
         }
         
         #falling-container {
@@ -693,7 +728,7 @@
             width: 100%;
             height: 100%;
             pointer-events: none;
-            z-index: 1; /* Đặt z-index thấp để không đè lên nội dung */
+            z-index: 1;
         }
         
         @media (min-width: 768px) {
@@ -713,6 +748,22 @@
             .message-box {
                 padding: 4rem;
                 max-width: 500px;
+            }
+            
+            .falling-heart-main {
+                width: 55px;
+                height: 55px;
+            }
+            
+            .falling-heart-main::before,
+            .falling-heart-main::after {
+                width: 55px;
+                height: 55px;
+            }
+            
+            .falling-image-main {
+                width: 80px;
+                height: 80px;
             }
         }
     </style>
@@ -906,7 +957,7 @@
                 heart.className = 'countdown-heart';
                 
                 const left = Math.random() * 100;
-                const size = 20 + Math.random() * 25;
+                const size = 25 + Math.random() * 30;
                 const duration = 4 + Math.random() * 3;
                 const delay = Math.random() * 3;
                 
@@ -916,6 +967,10 @@
                 heart.style.animationDuration = `${duration}s`;
                 heart.style.animationDelay = `-${delay}s`;
                 
+                // Tăng opacity và brightness
+                heart.style.opacity = '0.9';
+                heart.style.filter = 'brightness(1.2)';
+                
                 countdownScreen.appendChild(heart);
                 
                 setTimeout(() => {
@@ -924,7 +979,7 @@
                     }
                 }, (duration + delay) * 1000);
                 
-            }, 150);
+            }, 120); // Tăng tần suất lên 120ms
         }
         
         function createSparkleDots() {
@@ -944,10 +999,11 @@
                 dot.style.animationDelay = `${delay}s`;
                 dot.style.animationDuration = `${duration}s`;
                 
-                const colors = ['#ff85a2', '#ffd166', '#06d6a0', '#118ab2'];
+                const colors = ['#ff85a2', '#ffd166', '#ff9a9e', '#ff6b6b'];
                 const color = colors[Math.floor(Math.random() * colors.length)];
                 dot.style.background = color;
-                dot.style.boxShadow = `0 0 20px ${color}`;
+                dot.style.boxShadow = `0 0 25px ${color}`;
+                dot.style.opacity = '0.9';
                 
                 countdownScreen.appendChild(dot);
                 
@@ -957,10 +1013,10 @@
                     }
                 }, (duration + delay) * 1000);
                 
-            }, 300);
+            }, 200); // Tăng tần suất lên 200ms
         }
         
-        // ========== TRÁI TIM VÀ ẢNH RƠI TRONG MAIN CONTENT ==========
+        // ========== TRÁI TIM VÀ ẢNH RƠI TRONG MAIN CONTENT - RÕ HƠN ==========
         function createMainHearts() {
             const container = document.getElementById('falling-container');
             
@@ -969,27 +1025,44 @@
                 heart.className = 'falling-heart-main';
                 
                 const left = Math.random() * 100;
-                const size = 25 + Math.random() * 25;
-                const duration = 8 + Math.random() * 6;
-                const delay = Math.random() * 5;
-                const rotationSpeed = 2 + Math.random() * 3;
+                const size = 40 + Math.random() * 30; // Tăng kích thước
+                const duration = 7 + Math.random() * 5;
+                const delay = Math.random() * 4;
                 
                 heart.style.left = `${left}%`;
                 heart.style.width = `${size}px`;
                 heart.style.height = `${size}px`;
                 heart.style.animationDuration = `${duration}s`;
                 heart.style.animationDelay = `-${delay}s`;
-                heart.style.animationTimingFunction = `linear`;
+                heart.style.opacity = '0.85'; // Tăng opacity
                 
+                // Màu sắc rõ hơn
                 const gradients = [
                     'linear-gradient(135deg, #e6396a 0%, #ff85a2 100%)',
                     'linear-gradient(135deg, #ff006e 0%, #ff477e 100%)',
-                    'linear-gradient(135deg, #ff5d8f 0%, #ff97b7 100%)'
+                    'linear-gradient(135deg, #ff5d8f 0%, #ff97b7 100%)',
+                    'linear-gradient(135deg, #ff3366 0%, #ff6699 100%)'
                 ];
                 const gradient = gradients[Math.floor(Math.random() * gradients.length)];
                 heart.style.background = gradient;
                 
                 container.appendChild(heart);
+                
+                // Thêm hiệu ứng lấp lánh
+                for (let i = 0; i < 2; i++) {
+                    setTimeout(() => {
+                        const sparkle = document.createElement('div');
+                        sparkle.className = 'heart-sparkle';
+                        sparkle.style.left = `${10 + Math.random() * 80}%`;
+                        sparkle.style.top = `${10 + Math.random() * 80}%`;
+                        sparkle.style.animationDelay = `${Math.random()}s`;
+                        heart.appendChild(sparkle);
+                        
+                        setTimeout(() => {
+                            if (sparkle.parentNode) sparkle.remove();
+                        }, 1500);
+                    }, i * 800);
+                }
                 
                 setTimeout(() => {
                     if (heart.parentNode) {
@@ -997,30 +1070,34 @@
                     }
                 }, (duration + delay) * 1000);
                 
-            }, 300); // Tạo trái tim mới mỗi 300ms
+            }, 250); // Tạo trái tim mới mỗi 250ms
         }
         
         function createMainImages() {
             const container = document.getElementById('falling-container');
             
             mainImagesInterval = setInterval(() => {
-                if (Math.random() > 0.6) return; // 40% cơ hội tạo ảnh
+                if (Math.random() > 0.5) return; // 50% cơ hội tạo ảnh
                 
                 const img = document.createElement('img');
                 img.className = 'falling-image-main';
                 img.src = FALL_IMAGE_URLS[0];
+                img.crossOrigin = "anonymous";
                 
                 const left = Math.random() * 100;
-                const size = 40 + Math.random() * 40;
-                const duration = 10 + Math.random() * 8;
-                const delay = Math.random() * 5;
-                const rotation = Math.random() * 720;
+                const size = 60 + Math.random() * 50; // Tăng kích thước
+                const duration = 9 + Math.random() * 6;
+                const delay = Math.random() * 4;
                 
                 img.style.left = `${left}%`;
                 img.style.width = `${size}px`;
                 img.style.height = `${size}px`;
                 img.style.animationDuration = `${duration}s`;
                 img.style.animationDelay = `-${delay}s`;
+                img.style.opacity = '0.85'; // Tăng opacity
+                
+                // Tăng brightness và contrast
+                img.style.filter = 'brightness(1.3) contrast(1.3) saturate(1.4) drop-shadow(0 10px 25px rgba(0, 0, 0, 0.5))';
                 
                 container.appendChild(img);
                 
@@ -1030,7 +1107,7 @@
                     }
                 }, (duration + delay) * 1000);
                 
-            }, 800); // Tạo ảnh mới mỗi 800ms
+            }, 600); // Tạo ảnh mới mỗi 600ms
         }
         
         // ========== COUNTDOWN ==========
@@ -1073,25 +1150,26 @@
         function createHeartExplosion(xPercent, yPercent) {
             const countdownScreen = document.getElementById('countdown-screen');
             
-            for (let i = 0; i < 15; i++) {
+            for (let i = 0; i < 20; i++) { // Tăng số lượng trái tim
                 const heart = document.createElement('div');
                 heart.className = 'countdown-heart';
                 
-                const angle = (i / 15) * Math.PI * 2;
-                const speed = 1.5 + Math.random() * 1.5;
+                const angle = (i / 20) * Math.PI * 2;
+                const speed = 2 + Math.random() * 2; // Tăng tốc độ
                 const vx = Math.cos(angle) * speed;
                 const vy = Math.sin(angle) * speed;
-                const size = 15 + Math.random() * 20;
+                const size = 20 + Math.random() * 25; // Tăng kích thước
                 
                 heart.style.left = `${xPercent}%`;
                 heart.style.top = `${yPercent}%`;
                 heart.style.width = `${size}px`;
                 heart.style.height = `${size}px`;
                 heart.style.background = 'linear-gradient(135deg, #e6396a 0%, #ff85a2 100%)';
-                heart.style.boxShadow = `0 4px 20px rgba(230, 57, 106, 0.7)`;
+                heart.style.boxShadow = `0 6px 25px rgba(230, 57, 106, 0.8)`;
                 heart.style.animation = 'none';
                 heart.style.opacity = '1';
                 heart.style.transform = 'rotate(45deg)';
+                heart.style.filter = 'brightness(1.3)';
                 
                 countdownScreen.appendChild(heart);
                 
@@ -1103,8 +1181,8 @@
                 function animateExplosion() {
                     posX += vx;
                     posY += vy;
-                    opacity -= 0.02;
-                    scale -= 0.01;
+                    opacity -= 0.015; // Giảm chậm hơn
+                    scale -= 0.008;
                     
                     heart.style.left = `${posX}%`;
                     heart.style.top = `${posY}%`;
@@ -1148,7 +1226,7 @@
                 musicIcon.textContent = '⏸️';
                 setTimeout(() => {
                     music.muted = false;
-                    fadeVolume(music, 0.5, 1500);
+                    fadeVolume(music, 0.6, 1500); // Tăng volume lên 0.6
                 }, 600);
             }).catch(() => {
                 const unlock = () => {
@@ -1322,18 +1400,19 @@
                 if(!fwRunning) return;
                 const x = Math.random()*fwCanvas.width;
                 const y = Math.random()*fwCanvas.height*0.6 + fwCanvas.height*0.2;
-                const colors = ['#ff85a2','#ffd166','#06d6a0','#118ab2','#e6396a'];
-                for(let i=0;i<40;i++){
+                const colors = ['#ff85a2','#ffd166','#06d6a0','#118ab2','#e6396a', '#ff6b6b', '#ff9a9e'];
+                for(let i=0;i<50;i++){ // Tăng số lượng particles
                     fwParticles.push({
                         x,y,
-                        vx:(Math.random()-0.5)*4,
-                        vy:(Math.random()-0.5)*4,
-                        life:60+Math.random()*40,
-                        color:colors[Math.floor(Math.random()*colors.length)]
+                        vx:(Math.random()-0.5)*5,
+                        vy:(Math.random()-0.5)*5,
+                        life:80+Math.random()*40,
+                        color:colors[Math.floor(Math.random()*colors.length)],
+                        size: 2 + Math.random() * 3 // Thêm kích thước random
                     });
                 }
             }
-            const burstTimer = setInterval(burst,2500);
+            const burstTimer = setInterval(burst,2000); // Tăng tần suất
             function step(){
                 if(!fwRunning) { 
                     fwCtx.clearRect(0,0,fwCanvas.width,fwCanvas.height); 
@@ -1350,7 +1429,7 @@
                     fwCtx.globalCompositeOperation = 'lighter';
                     fwCtx.fillStyle = p.color;
                     fwCtx.beginPath();
-                    fwCtx.arc(p.x,p.y,2,0,Math.PI*2);
+                    fwCtx.arc(p.x,p.y,p.size,0,Math.PI*2);
                     fwCtx.fill();
                     if(p.life<=0) fwParticles.splice(i,1);
                 }
