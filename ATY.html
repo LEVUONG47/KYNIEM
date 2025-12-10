@@ -17,8 +17,8 @@
         }
         
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: #fdf6f8;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #fdf6f8 0%, #fff5f7 50%, #fceef1 100%);
             color: #4a4e69;
             overflow-x: hidden;
             min-height: 100vh;
@@ -228,7 +228,7 @@
             position: absolute;
             width: 28px;
             height: 28px;
-            background: #e6396a;
+            background: linear-gradient(135deg, #e6396a 0%, #ff85a2 100%);
             transform: rotate(45deg);
             opacity: 0;
             z-index: 15;
@@ -242,7 +242,7 @@
             content: '';
             width: 28px;
             height: 28px;
-            background: #e6396a;
+            background: linear-gradient(135deg, #e6396a 0%, #ff85a2 100%);
             border-radius: 50%;
             position: absolute;
         }
@@ -305,124 +305,102 @@
             overflow-x: hidden;
         }
         
-        /* New: Shining hearts in main content */
-        .shining-heart {
-            position: absolute;
-            width: 35px;
-            height: 35px;
-            background: #e6396a;
-            transform: rotate(45deg);
-            opacity: 0.9;
-            z-index: 5;
-            box-shadow: 0 4px 25px rgba(230, 57, 106, 0.7),
-                        inset 0 2px 10px rgba(255, 255, 255, 0.4);
-            animation: shineFloat linear infinite;
-            border-radius: 4px;
-        }
-        
-        .shining-heart::before,
-        .shining-heart::after {
-            content: '';
-            width: 35px;
-            height: 35px;
-            background: #e6396a;
-            border-radius: 50%;
-            position: absolute;
-        }
-        
-        .shining-heart::before { 
-            top: -17.5px; 
-            left: 0; 
-        }
-        
-        .shining-heart::after { 
-            top: 0; 
-            left: -17.5px; 
-        }
-        
-        @keyframes shineFloat {
-            0% { 
-                transform: rotate(45deg) translateY(100vh) rotate(0deg);
-                opacity: 0;
-            }
-            10% { 
-                opacity: 0.8;
-            }
-            90% { 
-                opacity: 0.8;
-            }
-            100% { 
-                transform: rotate(45deg) translateY(-100px) rotate(720deg);
-                opacity: 0;
-            }
-        }
-        
-        .shining-heart .spark {
-            position: absolute;
-            width: 15px;
-            height: 15px;
-            background: white;
-            border-radius: 50%;
-            opacity: 0;
-            filter: blur(2px);
-            animation: sparkFlash 1.5s infinite;
-        }
-        
-        @keyframes sparkFlash {
-            0%, 100% { 
-                transform: scale(0.2);
-                opacity: 0;
-            }
-            50% { 
-                transform: scale(0.8);
-                opacity: 0.8;
-            }
-        }
-        
-        /* Các phần CSS khác giữ nguyên */
+        /* CẢI THIỆN MAIN CONTENT */
         .content-section {
-            padding: 2rem 1rem;
+            padding: 3rem 1.5rem;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
             justify-content: center;
             position: relative;
             z-index: 2;
+            backdrop-filter: blur(5px);
+        }
+        
+        .section-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0.1;
+            z-index: -1;
+            background: radial-gradient(circle at 30% 30%, rgba(230, 57, 106, 0.2) 0%, transparent 50%),
+                        radial-gradient(circle at 70% 70%, rgba(255, 133, 162, 0.2) 0%, transparent 50%);
         }
         
         h1 {
             color: #e6396a;
-            font-size: 2.8rem;
+            font-size: 3.2rem;
             text-align: center;
-            margin-bottom: 1rem;
+            margin-bottom: 1.5rem;
             text-shadow: 0 4px 15px rgba(230, 57, 106, 0.3);
+            font-weight: 800;
+            letter-spacing: 1px;
+            background: linear-gradient(135deg, #e6396a 0%, #ff85a2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #888;
+            font-size: 1.3rem;
+            margin-bottom: 3rem;
+            font-weight: 300;
+            letter-spacing: 1px;
         }
         
         h2 {
             color: #e6396a;
-            font-size: 2.3rem;
+            font-size: 2.6rem;
             text-align: center;
-            margin: 2rem 0;
+            margin: 2.5rem 0;
             text-shadow: 0 3px 10px rgba(230, 57, 106, 0.2);
+            font-weight: 700;
+            position: relative;
+            padding-bottom: 1rem;
+        }
+        
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background: linear-gradient(90deg, #e6396a, #ff85a2);
+            border-radius: 2px;
+        }
+        
+        .heart-container {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            margin: 2.5rem auto;
         }
         
         .heart {
             width: 180px;
             height: 180px;
             background: linear-gradient(135deg, #e6396a 0%, #ff85a2 100%);
-            margin: 2rem auto;
-            position: relative;
-            transform: rotate(45deg);
+            margin: 0 auto;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(45deg);
             animation: heartbeat 1.5s infinite;
             box-shadow: 
-                0 15px 40px rgba(230, 57, 106, 0.4),
+                0 20px 50px rgba(230, 57, 106, 0.4),
                 inset 0 10px 20px rgba(255, 255, 255, 0.3);
-            border-radius: 10px;
+            border-radius: 12px;
         }
         
         @keyframes heartbeat {
-            0%, 100% { transform: rotate(45deg) scale(1); }
-            50% { transform: rotate(45deg) scale(1.1); }
+            0%, 100% { transform: translate(-50%, -50%) rotate(45deg) scale(1); }
+            50% { transform: translate(-50%, -50%) rotate(45deg) scale(1.1); }
         }
         
         .heart:before,
@@ -445,30 +423,239 @@
             left: -90px;
         }
         
-        .timeline-item {
-            background: rgba(255, 255, 255, 0.95);
-            margin: 1.5rem 0;
-            padding: 1.8rem;
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1),
-                        0 5px 15px rgba(230, 57, 106, 0.1);
-            opacity: 0;
-            transform: translateY(30px);
-            transition: all 0.6s ease;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.3);
+        /* CẢI THIỆN TIMELINE */
+        .timeline {
+            max-width: 800px;
+            margin: 0 auto;
         }
         
+        .timeline-item {
+            background: rgba(255, 255, 255, 0.95);
+            margin: 2rem 0;
+            padding: 2.2rem;
+            border-radius: 25px;
+            box-shadow: 
+                0 15px 40px rgba(0,0,0,0.1),
+                0 8px 25px rgba(230, 57, 106, 0.12),
+                inset 0 0 0 1px rgba(255, 255, 255, 0.8);
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            backdrop-filter: blur(20px);
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+        
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 6px;
+            height: 100%;
+            background: linear-gradient(to bottom, #e6396a, #ff85a2);
+            border-radius: 6px 0 0 6px;
+        }
+        
+        .timeline-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 
+                0 20px 50px rgba(0,0,0,0.15),
+                0 12px 30px rgba(230, 57, 106, 0.18);
+        }
+        
+        .timeline-date {
+            color: #e6396a;
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .timeline-date::before {
+            content: '📅';
+            font-size: 1.2rem;
+        }
+        
+        .timeline-text {
+            line-height: 1.8;
+            font-size: 1.1rem;
+            color: #555;
+            margin-top: 1.2rem;
+        }
+        
+        .timeline-image {
+            width: 100%;
+            height: 240px;
+            object-fit: cover;
+            border-radius: 15px;
+            margin-top: 1.8rem;
+            border: 3px solid rgba(230, 57, 106, 0.15);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+        
+        .timeline-image:hover {
+            transform: scale(1.02);
+        }
+        
+        /* MESSAGE BOX CẢI THIỆN */
         .message-box {
             background: rgba(255, 255, 255, 0.95);
-            padding: 2.5rem;
-            margin: 2rem auto;
-            border-radius: 25px;
-            max-width: 400px;
-            box-shadow: 0 15px 40px rgba(0,0,0,0.15),
-                        0 8px 25px rgba(230, 57, 106, 0.15);
+            padding: 3rem;
+            margin: 3rem auto;
+            border-radius: 30px;
+            max-width: 450px;
+            box-shadow: 
+                0 20px 60px rgba(0,0,0,0.15),
+                0 12px 35px rgba(230, 57, 106, 0.15),
+                inset 0 0 0 1px rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .message-box::before {
+            content: '💌';
+            position: absolute;
+            top: -20px;
+            right: -20px;
+            font-size: 8rem;
+            opacity: 0.1;
+            transform: rotate(15deg);
+        }
+        
+        .message-text {
+            line-height: 1.9;
+            font-size: 1.15rem;
+            color: #555;
+            text-align: center;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .highlight {
+            color: #e6396a;
+            font-weight: 700;
+            background: linear-gradient(135deg, #e6396a, #ff85a2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-size: 1.2rem;
+        }
+        
+        /* FOOTER CẢI THIỆN */
+        .footer {
+            text-align: center;
+            padding: 4rem 1.5rem;
+            color: #888;
+            position: relative;
+            z-index: 2;
+            background: rgba(255, 255, 255, 0.7);
+            margin-top: 2rem;
             backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-top: 1px solid rgba(230, 57, 106, 0.1);
+        }
+        
+        .footer-text {
+            font-size: 1.2rem;
+            letter-spacing: 1px;
+        }
+        
+        .footer-heart {
+            color: #e6396a;
+            font-size: 1.5rem;
+            animation: heartbeat 1.5s infinite;
+            display: inline-block;
+        }
+        
+        /* HIỆU ỨNG TRÁI TIM RƠI TRONG MAIN CONTENT */
+        .falling-heart-main {
+            position: fixed;
+            width: 35px;
+            height: 35px;
+            background: linear-gradient(135deg, #e6396a 0%, #ff85a2 100%);
+            transform: rotate(45deg);
+            opacity: 0.7;
+            z-index: 1; /* Đặt z-index thấp để không đè lên nội dung */
+            box-shadow: 0 5px 25px rgba(230, 57, 106, 0.6),
+                        inset 0 2px 10px rgba(255, 255, 255, 0.3);
+            animation: mainHeartFall linear infinite;
+            border-radius: 4px;
+            pointer-events: none;
+        }
+        
+        .falling-heart-main::before,
+        .falling-heart-main::after {
+            content: '';
+            width: 35px;
+            height: 35px;
+            background: linear-gradient(135deg, #e6396a 0%, #ff85a2 100%);
+            border-radius: 50%;
+            position: absolute;
+        }
+        
+        .falling-heart-main::before { 
+            top: -17.5px; 
+            left: 0; 
+        }
+        
+        .falling-heart-main::after { 
+            top: 0; 
+            left: -17.5px; 
+        }
+        
+        @keyframes mainHeartFall {
+            0% { 
+                transform: rotate(45deg) translateY(-100px) rotate(0deg);
+                opacity: 0;
+            }
+            10% { 
+                opacity: 0.7;
+            }
+            90% { 
+                opacity: 0.7;
+            }
+            100% { 
+                transform: rotate(45deg) translateY(100vh) rotate(720deg);
+                opacity: 0;
+            }
+        }
+        
+        /* Cũng thêm ảnh rơi */
+        .falling-image-main {
+            position: fixed;
+            width: 50px;
+            height: 50px;
+            border-radius: 10px;
+            object-fit: cover;
+            opacity: 0.6;
+            filter: brightness(1.1) contrast(1.1) blur(0.5px);
+            animation: mainImageFall linear infinite;
+            z-index: 1;
+            pointer-events: none;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+        }
+        
+        @keyframes mainImageFall {
+            0% { 
+                transform: translateY(-100px) rotate(0deg);
+                opacity: 0;
+            }
+            10% { 
+                opacity: 0.6;
+            }
+            90% { 
+                opacity: 0.6;
+            }
+            100% { 
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0;
+            }
         }
         
         .music-btn {
@@ -485,7 +672,8 @@
             color: white;
             font-size: 1.5rem;
             z-index: 100;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3),
+                        0 0 20px rgba(230, 57, 106, 0.4);
             border: none;
             cursor: pointer;
             transition: all 0.3s ease;
@@ -494,7 +682,8 @@
         
         .music-btn:hover {
             transform: scale(1.1);
-            box-shadow: 0 15px 30px rgba(0,0,0,0.4);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.4),
+                        0 0 30px rgba(230, 57, 106, 0.6);
         }
         
         #falling-container {
@@ -504,111 +693,26 @@
             width: 100%;
             height: 100%;
             pointer-events: none;
-            z-index: 1;
-        }
-
-        .falling-item {
-            position: absolute;
-            top: -10%;
-            animation-name: fall;
-            animation-timing-function: linear;
-            animation-iteration-count: infinite;
-            z-index: 1;
-        }
-
-        .falling-img {
-            display: block;
-            opacity: 0.85;
-            filter: blur(1px) brightness(1.05) contrast(1.05);
-        }
-
-        .sparkle {
-            position: absolute;
-            color: #fff;
-            text-shadow: 0 0 10px rgba(255,255,255,0.9);
-            opacity: 0.8;
-            animation: twinkle 2s ease-in-out infinite;
-            mix-blend-mode: screen;
-            font-size: 16px;
-        }
-
-        @keyframes twinkle {
-            0%, 100% { opacity: 0.2; transform: scale(0.8); }
-            50% { opacity: 1; transform: scale(1.2); }
-        }
-
-        .falling-heart {
-            width: 45px;
-            height: 45px;
-            background: linear-gradient(135deg, #e6396a 0%, #ff85a2 100%);
-            transform: rotate(45deg);
-            position: absolute;
-            top: -10%;
-            border-radius: 3px;
-            opacity: 0.8;
-            z-index: 2;
-            box-shadow: 0 5px 20px rgba(230, 57, 106, 0.5);
-            animation: fall linear infinite, heartbeat 2.5s infinite;
-            border: 2px solid rgba(255, 255, 255, 0.2);
-        }
-
-        .falling-heart:before,
-        .falling-heart:after {
-            content: '';
-            width: 32px;
-            height: 32px;
-            background: linear-gradient(135deg, #e6396a 0%, #ff85a2 100%);
-            border-radius: 50%;
-            position: absolute;
-        }
-
-        .falling-heart:before { top: -16px; left: 0; }
-        .falling-heart:after { top: 0; left: -16px; }
-
-        @keyframes fall {
-            0% { transform: rotate(45deg) translateY(-10vh) rotate(0deg); }
-            100% { transform: rotate(45deg) translateY(110vh) rotate(720deg); }
+            z-index: 1; /* Đặt z-index thấp để không đè lên nội dung */
         }
         
         @media (min-width: 768px) {
-            h1 { font-size: 3.5rem; }
-            h2 { font-size: 2.8rem; }
+            h1 { font-size: 4rem; }
+            .subtitle { font-size: 1.5rem; }
+            h2 { font-size: 3.2rem; }
             
-            .countdown-wrapper {
-                width: 350px;
-                height: 350px;
+            .content-section {
+                padding: 4rem 2rem;
             }
             
-            .countdown-circle {
-                width: 350px;
-                height: 350px;
+            .timeline-item {
+                padding: 2.5rem;
+                margin: 2.5rem 0;
             }
             
-            .countdown-circle-2 {
-                width: 280px;
-                height: 280px;
-            }
-            
-            .countdown-circle-3 {
-                width: 210px;
-                height: 210px;
-            }
-            
-            .countdown-number {
-                font-size: 9rem;
-            }
-            
-            .enter-btn {
-                width: 200px;
-                height: 200px;
-            }
-            
-            .enter-text {
-                font-size: 1.6rem;
-            }
-            
-            .enter-icon {
-                font-size: 3rem;
+            .message-box {
+                padding: 4rem;
+                max-width: 500px;
             }
         }
     </style>
@@ -649,84 +753,97 @@
     
     <!-- Main Content -->
     <div id="main-content">
-        <div id="shining-hearts-container"></div>
-        
         <!-- Section 1 -->
         <div class="content-section" id="section1">
+            <div class="section-bg"></div>
             <h1>365 Ngày Yêu Thương</h1>
-            <p style="text-align: center; color: #666; margin-bottom: 2rem; font-size: 1.2rem;">
-                Kỷ niệm trọn vẹn một năm bên nhau
-            </p>
-            <div class="heart"></div>
+            <p class="subtitle">Kỷ niệm trọn vẹn một năm bên nhau</p>
+            <div class="heart-container">
+                <div class="heart"></div>
+            </div>
         </div>
         
         <!-- Section 2 -->
         <div class="content-section" id="section2">
+            <div class="section-bg"></div>
             <h2>Ngày Chúng Ta Gặp</h2>
-            <div class="timeline-item">
-                <h3 style="color: #e6396a; margin-bottom: 1rem;">12/12/2023</h3>
-                <p style="margin-top: 1rem; line-height: 1.8;">
-                    Ngày đầu tiên chúng ta gặp nhau, trái tim như có tiếng sét ái tình...
-                </p>
-                <img src="https://raw.githubusercontent.com/LEVUONG47/KYNIEM/main/desktop-wallpaper-1920x1200-px-1985-80and039s-album-android-asia-covers-cyborgs-dean-fiction-girl-robot-robots-roger-s-entertainment-movies.jpg" 
-                     style="width:100%; height:200px; object-fit:cover; border-radius:15px; margin-top:1.5rem; border: 3px solid rgba(230, 57, 106, 0.2);">
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-date">12/12/2023</div>
+                    <p class="timeline-text">
+                        Ngày đầu tiên chúng ta gặp nhau, trái tim như có tiếng sét ái tình. Khoảnh khắc đó đã thay đổi cuộc đời anh mãi mãi...
+                    </p>
+                    <img src="https://raw.githubusercontent.com/LEVUONG47/KYNIEM/main/desktop-wallpaper-1920x1200-px-1985-80and039s-album-android-asia-covers-cyborgs-dean-fiction-girl-robot-robots-roger-s-entertainment-movies.jpg" 
+                         class="timeline-image">
+                </div>
             </div>
         </div>
         
         <!-- Section 3 -->
         <div class="content-section" id="section3">
+            <div class="section-bg"></div>
             <h2>Chuyến Đi Đầu Tiên</h2>
-            <div class="timeline-item">
-                <h3 style="color: #e6396a; margin-bottom: 1rem;">Tháng 1/2024</h3>
-                <p style="margin-top: 1rem; line-height: 1.8;">
-                    Chuyến đi Đà Lạt đầu tiên cùng nhau, những kỷ niệm không thể quên...
-                </p>
-                <img src="https://raw.githubusercontent.com/LEVUONG47/KYNIEM/main/desktop-wallpaper-1920x1200-px-1985-80and039s-album-android-asia-covers-cyborgs-dean-fiction-girl-robot-robots-roger-s-entertainment-movies.jpg" 
-                     style="width:100%; height:200px; object-fit:cover; border-radius:15px; margin-top:1.5rem; border: 3px solid rgba(230, 57, 106, 0.2);">
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-date">Tháng 1/2024</div>
+                    <p class="timeline-text">
+                        Chuyến đi Đà Lạt đầu tiên cùng nhau, những kỷ niệm không thể quên. Những con đường đầy sương, những bông hoa dã quỳ và tiếng cười giòn tan của em...
+                    </p>
+                    <img src="https://raw.githubusercontent.com/LEVUONG47/KYNIEM/main/desktop-wallpaper-1920x1200-px-1985-80and039s-album-android-asia-covers-cyborgs-dean-fiction-girl-robot-robots-roger-s-entertainment-movies.jpg" 
+                         class="timeline-image">
+                </div>
             </div>
         </div>
         
         <!-- Section 4 -->
         <div class="content-section" id="section4">
+            <div class="section-bg"></div>
             <h2>Sinh Nhật Đầu Tiên</h2>
-            <div class="timeline-item">
-                <h3 style="color: #e6396a; margin-bottom: 1rem;">Tháng 6/2024</h3>
-                <p style="margin-top: 1rem; line-height: 1.8;">
-                    Sinh nhật đầu tiên bên nhau, những món quà và lời chúc ngọt ngào...
-                </p>
-                <img src="https://raw.githubusercontent.com/LEVUONG47/KYNIEM/main/desktop-wallpaper-1920x1200-px-1985-80and039s-album-android-asia-covers-cyborgs-dean-fiction-girl-robot-robots-roger-s-entertainment-movies.jpg" 
-                     style="width:100%; height:200px; object-fit:cover; border-radius:15px; margin-top:1.5rem; border: 3px solid rgba(230, 57, 106, 0.2);">
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-date">Tháng 6/2024</div>
+                    <p class="timeline-text">
+                        Sinh nhật đầu tiên bên nhau, những món quà và lời chúc ngọt ngào. Ánh nến lung linh trong đôi mắt em, khoảnh khắc đó anh sẽ nhớ suốt đời...
+                    </p>
+                    <img src="https://raw.githubusercontent.com/LEVUONG47/KYNIEM/main/desktop-wallpaper-1920x1200-px-1985-80and039s-album-android-asia-covers-cyborgs-dean-fiction-girl-robot-robots-roger-s-entertainment-movies.jpg" 
+                         class="timeline-image">
+                </div>
             </div>
         </div>
         
         <!-- Section 5 -->
         <div class="content-section" id="section5">
+            <div class="section-bg"></div>
             <h2>Trọn Vẹn Một Năm</h2>
-            <div class="timeline-item">
-                <h3 style="color: #e6396a; margin-bottom: 1rem;">12/12/2024</h3>
-                <p style="margin-top: 1rem; line-height: 1.8;">
-                    Tròn một năm yêu nhau, 365 ngày hạnh phúc bên nhau...
-                </p>
-                <img src="https://raw.githubusercontent.com/LEVUONG47/KYNIEM/main/desktop-wallpaper-1920x1200-px-1985-80and039s-album-android-asia-covers-cyborgs-dean-fiction-girl-robot-robots-roger-s-entertainment-movies.jpg" 
-                     style="width:100%; height:200px; object-fit:cover; border-radius:15px; margin-top:1.5rem; border: 3px solid rgba(230, 57, 106, 0.2);">
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-date">12/12/2024</div>
+                    <p class="timeline-text">
+                        Tròn một năm yêu nhau, 365 ngày hạnh phúc bên nhau. Mỗi ngày là một trang nhật ký đẹp đẽ, viết nên câu chuyện tình yêu của chúng ta...
+                    </p>
+                    <img src="https://raw.githubusercontent.com/LEVUONG47/KYNIEM/main/desktop-wallpaper-1920x1200-px-1985-80and039s-album-android-asia-covers-cyborgs-dean-fiction-girl-robot-robots-roger-s-entertainment-movies.jpg" 
+                         class="timeline-image">
+                </div>
             </div>
         </div>
         
         <!-- Message Section -->
         <div class="content-section" id="section6">
+            <div class="section-bg"></div>
             <h2>Thông Điệp Từ Trái Tim</h2>
             <div class="message-box">
-                <p style="line-height: 1.8; font-size: 1.1rem;">
+                <p class="message-text">
                     Một năm trôi qua thật nhanh, nhưng cũng thật trọn vẹn. 
                     Mỗi ngày bên em là một trang mới trong cuốn sách tình yêu của anh. 
-                    <span style="color: #e6396a; font-weight: bold;">Cảm ơn em</span> đã đến bên anh, cho anh những khoảnh khắc ngọt ngào...
+                    <span class="highlight">Cảm ơn em</span> đã đến bên anh, cho anh những khoảnh khắc ngọt ngào, 
+                    những nụ cười ấm áp và một tình yêu vô điều kiện...
                 </p>
             </div>
         </div>
         
         <!-- Footer -->
-        <div style="text-align: center; padding: 3rem 1rem; color: #666; position: relative; z-index: 2;">
-            <p style="font-size: 1.1rem;">Trang web được tạo với tất cả tình yêu 💖</p>
+        <div class="footer">
+            <p class="footer-text">Trang web được tạo với tất cả tình yêu <span class="footer-heart">💖</span></p>
         </div>
     </div>
 
@@ -742,7 +859,8 @@
         
         let heartInterval;
         let sparkleInterval;
-        let shiningHeartsInterval;
+        let mainHeartsInterval;
+        let mainImagesInterval;
         
         // ========== KHỞI TẠO ==========
         function isSupportedMobile() {
@@ -783,12 +901,10 @@
         function createCountdownHearts() {
             const countdownScreen = document.getElementById('countdown-screen');
             
-            // Tạo trái tim rơi trong countdown
             heartInterval = setInterval(() => {
                 const heart = document.createElement('div');
                 heart.className = 'countdown-heart';
                 
-                // Vị trí ngẫu nhiên
                 const left = Math.random() * 100;
                 const size = 20 + Math.random() * 25;
                 const duration = 4 + Math.random() * 3;
@@ -800,32 +916,20 @@
                 heart.style.animationDuration = `${duration}s`;
                 heart.style.animationDelay = `-${delay}s`;
                 
-                // Màu sắc gradient
-                const colors = [
-                    'linear-gradient(135deg, #e6396a 0%, #ff85a2 100%)',
-                    'linear-gradient(135deg, #ff477e 0%, #ff85a2 100%)',
-                    'linear-gradient(135deg, #ff006e 0%, #ff85a2 100%)'
-                ];
-                const color = colors[Math.floor(Math.random() * colors.length)];
-                heart.style.background = color;
-                heart.style.boxShadow = `0 4px 25px rgba(230, 57, 106, 0.7)`;
-                
                 countdownScreen.appendChild(heart);
                 
-                // Tự động xóa sau khi animation kết thúc
                 setTimeout(() => {
                     if (heart.parentNode) {
                         heart.remove();
                     }
                 }, (duration + delay) * 1000);
                 
-            }, 150); // Mỗi 150ms tạo một trái tim mới
+            }, 150);
         }
         
         function createSparkleDots() {
             const countdownScreen = document.getElementById('countdown-screen');
             
-            // Tạo các điểm sáng lấp lánh
             sparkleInterval = setInterval(() => {
                 const dot = document.createElement('div');
                 dot.className = 'sparkle-dot';
@@ -840,7 +944,6 @@
                 dot.style.animationDelay = `${delay}s`;
                 dot.style.animationDuration = `${duration}s`;
                 
-                // Màu sắc ngẫu nhiên
                 const colors = ['#ff85a2', '#ffd166', '#06d6a0', '#118ab2'];
                 const color = colors[Math.floor(Math.random() * colors.length)];
                 dot.style.background = color;
@@ -848,14 +951,86 @@
                 
                 countdownScreen.appendChild(dot);
                 
-                // Tự động xóa
                 setTimeout(() => {
                     if (dot.parentNode) {
                         dot.remove();
                     }
                 }, (duration + delay) * 1000);
                 
-            }, 300); // Mỗi 300ms tạo một điểm sáng
+            }, 300);
+        }
+        
+        // ========== TRÁI TIM VÀ ẢNH RƠI TRONG MAIN CONTENT ==========
+        function createMainHearts() {
+            const container = document.getElementById('falling-container');
+            
+            mainHeartsInterval = setInterval(() => {
+                const heart = document.createElement('div');
+                heart.className = 'falling-heart-main';
+                
+                const left = Math.random() * 100;
+                const size = 25 + Math.random() * 25;
+                const duration = 8 + Math.random() * 6;
+                const delay = Math.random() * 5;
+                const rotationSpeed = 2 + Math.random() * 3;
+                
+                heart.style.left = `${left}%`;
+                heart.style.width = `${size}px`;
+                heart.style.height = `${size}px`;
+                heart.style.animationDuration = `${duration}s`;
+                heart.style.animationDelay = `-${delay}s`;
+                heart.style.animationTimingFunction = `linear`;
+                
+                const gradients = [
+                    'linear-gradient(135deg, #e6396a 0%, #ff85a2 100%)',
+                    'linear-gradient(135deg, #ff006e 0%, #ff477e 100%)',
+                    'linear-gradient(135deg, #ff5d8f 0%, #ff97b7 100%)'
+                ];
+                const gradient = gradients[Math.floor(Math.random() * gradients.length)];
+                heart.style.background = gradient;
+                
+                container.appendChild(heart);
+                
+                setTimeout(() => {
+                    if (heart.parentNode) {
+                        heart.remove();
+                    }
+                }, (duration + delay) * 1000);
+                
+            }, 300); // Tạo trái tim mới mỗi 300ms
+        }
+        
+        function createMainImages() {
+            const container = document.getElementById('falling-container');
+            
+            mainImagesInterval = setInterval(() => {
+                if (Math.random() > 0.6) return; // 40% cơ hội tạo ảnh
+                
+                const img = document.createElement('img');
+                img.className = 'falling-image-main';
+                img.src = FALL_IMAGE_URLS[0];
+                
+                const left = Math.random() * 100;
+                const size = 40 + Math.random() * 40;
+                const duration = 10 + Math.random() * 8;
+                const delay = Math.random() * 5;
+                const rotation = Math.random() * 720;
+                
+                img.style.left = `${left}%`;
+                img.style.width = `${size}px`;
+                img.style.height = `${size}px`;
+                img.style.animationDuration = `${duration}s`;
+                img.style.animationDelay = `-${delay}s`;
+                
+                container.appendChild(img);
+                
+                setTimeout(() => {
+                    if (img.parentNode) {
+                        img.remove();
+                    }
+                }, (duration + delay) * 1000);
+                
+            }, 800); // Tạo ảnh mới mỗi 800ms
         }
         
         // ========== COUNTDOWN ==========
@@ -865,38 +1040,26 @@
             const count1 = document.getElementById('count-1');
             const enterBtn = document.getElementById('enter-btn');
             
-            // Hiệu ứng số 3
             setTimeout(() => {
                 count3.classList.add('active');
-                
-                // Hiệu ứng vụ nổ cho số 3
                 createHeartExplosion(50, 50);
                 
                 setTimeout(() => {
                     count3.classList.remove('active');
                     count2.classList.add('active');
-                    
-                    // Hiệu ứng vụ nổ cho số 2
                     createHeartExplosion(50, 50);
                     
                     setTimeout(() => {
                         count2.classList.remove('active');
                         count1.classList.add('active');
-                        
-                        // Hiệu ứng vụ nổ cho số 1
                         createHeartExplosion(50, 50);
                         
-                        // Sau khi countdown xong
                         setTimeout(() => {
-                            // Ẩn tất cả số đi
                             count3.classList.add('hidden');
                             count2.classList.add('hidden');
                             count1.classList.add('hidden');
-                            
-                            // Hiện nút chạm
                             enterBtn.classList.add('active');
                             
-                            // Dừng tạo trái tim và điểm sáng mới
                             clearInterval(heartInterval);
                             clearInterval(sparkleInterval);
                             
@@ -932,7 +1095,6 @@
                 
                 countdownScreen.appendChild(heart);
                 
-                // Animation explosion
                 let posX = xPercent;
                 let posY = yPercent;
                 let opacity = 1;
@@ -962,58 +1124,7 @@
             }
         }
         
-        // ========== TRÁI TIM LẤP LÁNH TRONG MAIN CONTENT ==========
-        function createShiningHearts() {
-            const container = document.getElementById('shining-hearts-container');
-            
-            shiningHeartsInterval = setInterval(() => {
-                const heart = document.createElement('div');
-                heart.className = 'shining-heart';
-                
-                // Vị trí ngẫu nhiên
-                const left = Math.random() * 100;
-                const size = 25 + Math.random() * 30;
-                const duration = 8 + Math.random() * 6;
-                const delay = Math.random() * 5;
-                
-                heart.style.left = `${left}%`;
-                heart.style.width = `${size}px`;
-                heart.style.height = `${size}px`;
-                heart.style.animationDuration = `${duration}s`;
-                heart.style.animationDelay = `-${delay}s`;
-                
-                // Màu sắc gradient
-                const gradients = [
-                    'linear-gradient(135deg, #e6396a 0%, #ff85a2 100%)',
-                    'linear-gradient(135deg, #ff006e 0%, #ff477e 100%)',
-                    'linear-gradient(135deg, #ff5d8f 0%, #ff97b7 100%)'
-                ];
-                const gradient = gradients[Math.floor(Math.random() * gradients.length)];
-                heart.style.background = gradient;
-                
-                container.appendChild(heart);
-                
-                // Thêm điểm sáng
-                for (let i = 0; i < 3; i++) {
-                    const spark = document.createElement('div');
-                    spark.className = 'spark';
-                    spark.style.left = `${20 + Math.random() * 60}%`;
-                    spark.style.top = `${20 + Math.random() * 60}%`;
-                    spark.style.animationDelay = `${Math.random() * 2}s`;
-                    heart.appendChild(spark);
-                }
-                
-                // Tự động xóa
-                setTimeout(() => {
-                    if (heart.parentNode) {
-                        heart.remove();
-                    }
-                }, (duration + delay) * 1000);
-                
-            }, 400); // Tạo trái tim mới mỗi 400ms
-        }
-        
-        // ========== ÂM THANH ĐƠN GIẢN ==========
+        // ========== ÂM THANH ==========
         function tryPlayMusic() {
             const music = document.getElementById('music');
             const musicBtn = document.getElementById('music-btn');
@@ -1078,7 +1189,7 @@
             }
         }
         
-        // ========== TỰ ĐỘNG CUỘN ĐƠN GIẢN ==========
+        // ========== TỰ ĐỘNG CUỘN ==========
         function startAutoScroll() {
             if (isScrolling) return;
             
@@ -1129,14 +1240,12 @@
         
         // ========== SỰ KIỆN ==========
         function setupEvents() {
-            // Nút nhạc
             document.getElementById('music-btn').addEventListener('click', function(e) {
                 e.stopPropagation();
                 toggleMusic();
                 userTouched = true;
             });
             
-            // Nút enter: nhấp vào trái tim để vào trang chính
             document.getElementById('enter-btn').addEventListener('click', function(){
                 userTouched = true;
                 ensureAutoplay();
@@ -1144,7 +1253,6 @@
                 const countdownScreen = document.getElementById('countdown-screen');
                 const mainContent = document.getElementById('main-content');
                 
-                // Hiệu ứng chuyển trang
                 countdownScreen.style.opacity = '0';
                 countdownScreen.style.transform = 'scale(1.5)';
                 countdownScreen.style.transition = 'all 1s ease';
@@ -1153,19 +1261,18 @@
                     countdownScreen.style.display = 'none';
                     mainContent.style.display = 'block';
                     
-                    // Bắt đầu hiệu ứng trái tim lấp lánh trong main content
-                    createShiningHearts();
+                    // Bắt đầu hiệu ứng trái tim và ảnh rơi
+                    createMainHearts();
+                    createMainImages();
                     
                     setTimeout(() => {
                         document.getElementById('section1').scrollIntoView({ behavior: 'smooth' });
-                        startFallingImages();
                         startFireworks();
                         setTimeout(autoScrollToNext, 5000);
                     }, 300);
                 }, 1000);
             });
 
-            // Double click để toggle auto scroll
             let lastTap = 0;
             document.addEventListener('click', function(e) {
                 const currentTime = new Date().getTime();
@@ -1181,7 +1288,6 @@
                 lastTap = currentTime;
             });
             
-            // Animation cho timeline items
             const items = document.querySelectorAll('.timeline-item');
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
@@ -1197,65 +1303,6 @@
             const unlockAudio = () => { ensureAutoplay(); };
             document.addEventListener('pointerdown', unlockAudio, { once: true });
             document.addEventListener('touchstart', unlockAudio, { once: true });
-        }
-        
-        function startFallingImages() {
-            const container = document.getElementById('falling-container');
-            const lastLefts = [];
-            function spawn() {
-                const r = Math.random();
-                let left = Math.random() * 100;
-                let tries = 0;
-                while (lastLefts.some(v => Math.abs(v - left) < 8) && tries < 5) {
-                    left = Math.random() * 100;
-                    tries++;
-                }
-                lastLefts.push(left);
-                if (lastLefts.length > 10) lastLefts.shift();
-                if (r < 0.48) {
-                    const wrap = document.createElement('div');
-                    wrap.className = 'falling-item';
-                    const img = document.createElement('img');
-                    img.className = 'falling-img';
-                    img.src = FALL_IMAGE_URLS[Math.floor(Math.random() * FALL_IMAGE_URLS.length)];
-                    const size = 44 + Math.random() * 60;
-                    img.style.width = size + 'px';
-                    wrap.style.left = left + '%';
-                    wrap.style.animationDuration = (7 + Math.random() * 7) + 's';
-                    wrap.style.animationDelay = (-Math.random() * 7) + 's';
-                    const star = document.createElement('span');
-                    star.className = 'sparkle';
-                    star.textContent = '✦';
-                    star.style.left = (Math.random() * 70) + '%';
-                    star.style.top = (Math.random() * 70) + '%';
-                    wrap.appendChild(img);
-                    wrap.appendChild(star);
-                    container.appendChild(wrap);
-                    setTimeout(() => { if (wrap.parentNode) wrap.remove(); }, 20000);
-                } else if (r < 0.96) {
-                    const heart = document.createElement('div');
-                    heart.className = 'falling-heart';
-                    heart.style.left = left + '%';
-                    heart.style.animationDuration = (7 + Math.random() * 7) + 's';
-                    heart.style.animationDelay = (-Math.random() * 7) + 's';
-                    container.appendChild(heart);
-                    setTimeout(() => { if (heart.parentNode) heart.remove(); }, 20000);
-                } else {
-                    const wrap = document.createElement('div');
-                    wrap.className = 'falling-item';
-                    const star = document.createElement('span');
-                    star.className = 'sparkle';
-                    star.textContent = '✦';
-                    wrap.style.left = left + '%';
-                    wrap.style.animationDuration = (6 + Math.random() * 6) + 's';
-                    wrap.style.animationDelay = (-Math.random() * 6) + 's';
-                    wrap.appendChild(star);
-                    container.appendChild(wrap);
-                    setTimeout(() => { if (wrap.parentNode) wrap.remove(); }, 15000);
-                }
-            }
-            for (let i = 0; i < 8; i++) spawn();
-            setInterval(spawn, 3000);
         }
 
         let fwRunning = false;
@@ -1316,13 +1363,6 @@
                 fwRunning = false; 
                 fwCtx.clearRect(0,0,fwCanvas.width,fwCanvas.height); 
             };
-        }
-
-        function toggleFireworks(){
-            fwRunning = !fwRunning;
-            if(!fwRunning){ 
-                if(fwCtx && fwCanvas) fwCtx.clearRect(0,0,fwCanvas.width,fwCanvas.height); 
-            }
         }
         
         // ========== KHỞI CHẠY ==========
