@@ -30,44 +30,245 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: #0b0b1a;
+            background: linear-gradient(135deg, #0b0b1a 0%, #1a1a2e 50%, #16213e 100%);
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             z-index: 1000;
+            overflow: hidden;
+        }
+        
+        .countdown-wrapper {
+            position: relative;
+            width: 280px;
+            height: 280px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .countdown-circle {
+            position: absolute;
+            width: 280px;
+            height: 280px;
+            border-radius: 50%;
+            border: 2px solid rgba(255, 133, 162, 0.2);
+            animation: pulse-ring 2s infinite;
+        }
+        
+        .countdown-circle-2 {
+            width: 240px;
+            height: 240px;
+            border: 2px solid rgba(230, 57, 106, 0.3);
+            animation-delay: 0.5s;
+        }
+        
+        .countdown-circle-3 {
+            width: 200px;
+            height: 200px;
+            border: 2px solid rgba(255, 195, 113, 0.2);
+            animation-delay: 1s;
+        }
+        
+        @keyframes pulse-ring {
+            0% { transform: scale(0.8); opacity: 0.8; }
+            100% { transform: scale(1.2); opacity: 0; }
         }
         
         .countdown-number {
-            font-size: 6rem;
+            font-size: 7rem;
+            font-weight: 800;
             color: #ff85a2;
-            margin: 1rem 0;
+            margin: 0;
             opacity: 0;
-            transform: scale(0.5);
-            transition: all 0.5s ease;
+            transform: scale(0.3) rotate(-180deg);
+            text-shadow: 
+                0 0 20px rgba(255, 133, 162, 0.7),
+                0 0 40px rgba(230, 57, 106, 0.5),
+                0 0 60px rgba(230, 57, 106, 0.3);
+            transition: all 0.8s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+            position: relative;
+            z-index: 10;
         }
         
         .countdown-number.active {
             opacity: 1;
-            transform: scale(1);
+            transform: scale(1) rotate(0deg);
         }
-
+        
+        .countdown-number::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 120%;
+            height: 120%;
+            background: radial-gradient(circle, rgba(255,133,162,0.2) 0%, rgba(230,57,106,0) 70%);
+            border-radius: 50%;
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.5s;
+        }
+        
+        .countdown-number.active::after {
+            opacity: 1;
+            animation: glow 1s ease-out;
+        }
+        
+        @keyframes glow {
+            0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; }
+            50% { opacity: 1; }
+            100% { transform: translate(-50%, -50%) scale(1.5); opacity: 0; }
+        }
+        
+        .countdown-title {
+            font-size: 1.5rem;
+            color: rgba(255, 255, 255, 0.8);
+            margin-top: 2rem;
+            text-align: center;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 0.5s 3.5s forwards;
+            font-weight: 300;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+        
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
         .gift-btn {
-            margin-top: 24px;
-            padding: 12px 18px;
+            margin-top: 2rem;
+            padding: 16px 32px;
             border: none;
-            border-radius: 28px;
-            background: #e6396a;
-            color: #fff;
-            font-size: 1rem;
-            box-shadow: 0 6px 16px rgba(230,57,106,0.4);
+            border-radius: 50px;
+            background: linear-gradient(135deg, #e6396a 0%, #ff85a2 100%);
+            color: white;
+            font-size: 1.1rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+            box-shadow: 
+                0 10px 30px rgba(230, 57, 106, 0.4),
+                inset 0 1px 0 rgba(255, 255, 255, 0.3);
             display: none;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 0.5s 4s forwards;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            z-index: 10;
+        }
+        
+        .gift-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: 0.5s;
+        }
+        
+        .gift-btn:hover::before {
+            left: 100%;
+        }
+        
+        .gift-btn:active {
+            transform: scale(0.95);
+            box-shadow: 0 5px 15px rgba(230, 57, 106, 0.4);
+        }
+        
+        /* Countdown hearts */
+        .countdown-heart {
+            position: absolute;
+            width: 24px;
+            height: 24px;
+            background: #e6396a;
+            transform: rotate(45deg);
+            opacity: 0;
+            z-index: 5;
+            box-shadow: 0 2px 10px rgba(230, 57, 106, 0.5);
+            animation: countdownHeartFall linear infinite;
+        }
+        
+        .countdown-heart::before,
+        .countdown-heart::after {
+            content: '';
+            width: 24px;
+            height: 24px;
+            background: #e6396a;
+            border-radius: 50%;
+            position: absolute;
+        }
+        
+        .countdown-heart::before { 
+            top: -12px; 
+            left: 0; 
+        }
+        
+        .countdown-heart::after { 
+            top: 0; 
+            left: -12px; 
+        }
+        
+        @keyframes countdownHeartFall {
+            0% { 
+                transform: rotate(45deg) translateY(-100px) rotate(0deg);
+                opacity: 0;
+            }
+            10% { 
+                opacity: 1;
+            }
+            90% { 
+                opacity: 1;
+            }
+            100% { 
+                transform: rotate(45deg) translateY(100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+        
+        .heart-pulse {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+        
+        .heart-pulse-dot {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: #ff85a2;
+            border-radius: 50%;
+            animation: pulseDot 2s infinite;
+        }
+        
+        @keyframes pulseDot {
+            0%, 100% { 
+                transform: scale(1);
+                opacity: 0.8;
+            }
+            50% { 
+                transform: scale(2);
+                opacity: 0.2;
+            }
         }
         
         #main-content {
             display: none;
         }
         
+        /* Các phần CSS khác giữ nguyên */
         .content-section {
             padding: 2rem 1rem;
             min-height: 100vh;
@@ -238,6 +439,30 @@
         @media (min-width: 768px) {
             h1 { font-size: 3rem; }
             h2 { font-size: 2.5rem; }
+            
+            .countdown-wrapper {
+                width: 320px;
+                height: 320px;
+            }
+            
+            .countdown-circle {
+                width: 320px;
+                height: 320px;
+            }
+            
+            .countdown-circle-2 {
+                width: 280px;
+                height: 280px;
+            }
+            
+            .countdown-circle-3 {
+                width: 240px;
+                height: 240px;
+            }
+            
+            .countdown-number {
+                font-size: 8rem;
+            }
         }
     </style>
 </head>
@@ -254,10 +479,20 @@
     
     <!-- Countdown Screen -->
     <div id="countdown-screen">
-        <div id="count-3" class="countdown-number">3</div>
-        <div id="count-2" class="countdown-number">2</div>
-        <div id="count-1" class="countdown-number">1</div>
-        <button id="gift-btn" class="gift-btn">Nhấp để nhận quà 🎁</button>
+        <div class="heart-pulse" id="heart-pulse"></div>
+        
+        <div class="countdown-wrapper">
+            <div class="countdown-circle"></div>
+            <div class="countdown-circle countdown-circle-2"></div>
+            <div class="countdown-circle countdown-circle-3"></div>
+            
+            <div id="count-3" class="countdown-number">3</div>
+            <div id="count-2" class="countdown-number">2</div>
+            <div id="count-1" class="countdown-number">1</div>
+        </div>
+        
+        <h2 class="countdown-title">Kỷ Niệm 1 Năm</h2>
+        <button id="gift-btn" class="gift-btn">Nhận Quà Tình Yêu 💝</button>
     </div>
 
     <div id="falling-container"></div>
@@ -356,6 +591,7 @@
         ];
         
         let debugVisible = false;
+        let heartInterval;
         
         // ========== KHỞI TẠO ==========
         function isSupportedMobile() {
@@ -381,12 +617,82 @@
             music.volume = 0.5;
             music.load();
             
+            // Khởi tạo hiệu ứng trong countdown
+            createCountdownHearts();
+            createPulseDots();
+            
             // Bắt đầu countdown
             startCountdown();
             
             // Setup sự kiện
             setupEvents();
             
+        }
+        
+        // ========== HIỆU ỨNG COUNTDOWN ==========
+        function createCountdownHearts() {
+            const countdownScreen = document.getElementById('countdown-screen');
+            
+            // Tạo trái tim rơi trong countdown
+            heartInterval = setInterval(() => {
+                const heart = document.createElement('div');
+                heart.className = 'countdown-heart';
+                
+                // Vị trí ngẫu nhiên
+                const left = Math.random() * 100;
+                const size = 16 + Math.random() * 20;
+                const duration = 3 + Math.random() * 2;
+                const delay = Math.random() * 2;
+                
+                heart.style.left = `${left}%`;
+                heart.style.width = `${size}px`;
+                heart.style.height = `${size}px`;
+                heart.style.animationDuration = `${duration}s`;
+                heart.style.animationDelay = `-${delay}s`;
+                
+                // Màu sắc ngẫu nhiên
+                const colors = ['#e6396a', '#ff85a2', '#ff477e', '#ff5d8f'];
+                const color = colors[Math.floor(Math.random() * colors.length)];
+                heart.style.background = color;
+                heart.style.boxShadow = `0 2px 10px ${color}80`;
+                
+                countdownScreen.appendChild(heart);
+                
+                // Tự động xóa sau khi animation kết thúc
+                setTimeout(() => {
+                    if (heart.parentNode) {
+                        heart.remove();
+                    }
+                }, (duration + delay) * 1000);
+                
+            }, 200); // Mỗi 200ms tạo một trái tim mới
+        }
+        
+        function createPulseDots() {
+            const pulseContainer = document.getElementById('heart-pulse');
+            
+            for (let i = 0; i < 20; i++) {
+                const dot = document.createElement('div');
+                dot.className = 'heart-pulse-dot';
+                
+                const left = Math.random() * 100;
+                const top = Math.random() * 100;
+                const delay = Math.random() * 2;
+                const size = 4 + Math.random() * 6;
+                
+                dot.style.left = `${left}%`;
+                dot.style.top = `${top}%`;
+                dot.style.animationDelay = `${delay}s`;
+                dot.style.width = `${size}px`;
+                dot.style.height = `${size}px`;
+                
+                // Màu sắc ngẫu nhiên
+                const colors = ['#e6396a', '#ff85a2', '#ff477e', '#ff9a9e'];
+                const color = colors[Math.floor(Math.random() * colors.length)];
+                dot.style.background = color;
+                
+                pulseContainer.appendChild(dot);
+            }
         }
         
         // ========== COUNTDOWN ==========
@@ -397,17 +703,26 @@
             const countdownScreen = document.getElementById('countdown-screen');
             const mainContent = document.getElementById('main-content');
             
-            // Countdown đơn giản
+            // Hiệu ứng số 3
             setTimeout(() => {
                 count3.classList.add('active');
+                
+                // Tạo hiệu ứng vụ nổ trái tim cho số 3
+                createHeartBurst(50, 50, '#e6396a');
                 
                 setTimeout(() => {
                     count3.classList.remove('active');
                     count2.classList.add('active');
                     
+                    // Tạo hiệu ứng vụ nổ trái tim cho số 2
+                    createHeartBurst(50, 50, '#ff85a2');
+                    
                     setTimeout(() => {
                         count2.classList.remove('active');
                         count1.classList.add('active');
+                        
+                        // Tạo hiệu ứng vụ nổ trái tim cho số 1
+                        createHeartBurst(50, 50, '#ff477e');
                         
                         // Sau khi countdown xong
                         setTimeout(() => {
@@ -415,13 +730,16 @@
                             const giftBtn = document.getElementById('gift-btn');
                             giftBtn.style.display = 'inline-block';
                             
+                            // Dừng tạo trái tim mới
+                            clearInterval(heartInterval);
+                            
                         }, 500);
                         
                     }, 1000);
                 }, 1000);
             }, 500);
-
-            // Fallback đảm bảo không kẹt ở màn hình countdown nếu người dùng không nhấp
+            
+            // Fallback đảm bảo không kẹt ở màn hình countdown
             setTimeout(() => {
                 if (document.getElementById('countdown-screen').style.display !== 'none') {
                     document.getElementById('countdown-screen').style.display = 'none';
@@ -431,6 +749,55 @@
                     startFireworks();
                 }
             }, 12000);
+        }
+        
+        function createHeartBurst(xPercent, yPercent, color) {
+            const countdownScreen = document.getElementById('countdown-screen');
+            
+            for (let i = 0; i < 12; i++) {
+                const heart = document.createElement('div');
+                heart.className = 'countdown-heart';
+                
+                const angle = (i / 12) * Math.PI * 2;
+                const speed = 2;
+                const vx = Math.cos(angle) * speed;
+                const vy = Math.sin(angle) * speed;
+                
+                heart.style.left = `${xPercent}%`;
+                heart.style.top = `${yPercent}%`;
+                heart.style.background = color;
+                heart.style.boxShadow = `0 2px 10px ${color}80`;
+                heart.style.animation = 'none';
+                heart.style.opacity = '1';
+                heart.style.transform = 'rotate(45deg)';
+                
+                countdownScreen.appendChild(heart);
+                
+                // Animation burst
+                let posX = xPercent;
+                let posY = yPercent;
+                let opacity = 1;
+                
+                function animateBurst() {
+                    posX += vx;
+                    posY += vy;
+                    opacity -= 0.02;
+                    
+                    heart.style.left = `${posX}%`;
+                    heart.style.top = `${posY}%`;
+                    heart.style.opacity = opacity;
+                    
+                    if (opacity > 0) {
+                        requestAnimationFrame(animateBurst);
+                    } else {
+                        if (heart.parentNode) {
+                            heart.remove();
+                        }
+                    }
+                }
+                
+                requestAnimationFrame(animateBurst);
+            }
         }
         
         // ========== ÂM THANH ĐƠN GIẢN ==========
@@ -468,16 +835,6 @@
                 document.addEventListener('pointerdown', unlock, { once: true });
                 document.addEventListener('touchstart', unlock, { once: true });
             });
-            ['play','playing','pause','ended','canplay','canplaythrough'].forEach(ev=>music.addEventListener(ev,()=>logStatus('audio:'+ev)));
-            music.addEventListener('error',()=>{logStatus('audio:error');});
-            music.addEventListener('stalled',()=>{logStatus('audio:stalled');});
-            music.addEventListener('abort',()=>{logStatus('audio:abort');});
-        }
-
-        function logStatus(msg){
-            const el=document.getElementById('debug-panel');
-            if(!el) return;
-            el.innerHTML += (new Date().toLocaleTimeString())+': '+msg+'<br/>';
         }
 
         function fadeVolume(el, target, ms) {
@@ -590,7 +947,6 @@
 
             // Chạm để bật/tắt auto scroll
             let lastTap = 0;
-            let tapCount = 0;
             document.addEventListener('click', function(e) {
                 const currentTime = new Date().getTime();
                 const tapLength = currentTime - lastTap;
@@ -604,19 +960,6 @@
                 }
                 
                 lastTap = currentTime;
-                tapCount++;
-                setTimeout(()=>{tapCount=0},1000);
-                if(tapCount>=3){
-                    debugVisible=!debugVisible;
-                    document.getElementById('debug-panel').style.display = debugVisible ? 'block' : 'none';
-                    logStatus('debug:'+ (debugVisible?'on':'off'));
-                    tapCount=0;
-                }
-                if(tapCount===4){
-                    toggleFireworks();
-                    logStatus('fireworks:toggle');
-                    tapCount=0;
-                }
             });
             
             // Animation cho timeline items
@@ -758,6 +1101,6 @@
         } else {
             init();
         }
-</script>
+    </script>
 </body>
 </html>
