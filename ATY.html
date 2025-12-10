@@ -243,7 +243,7 @@
     </div>
 
     <div id="falling-container"></div>
-    <canvas id="fx-canvas" style="position:fixed;top:0;left:0;width:100%;height:100%;z-index:60;pointer-events:none;"></canvas>
+    <canvas id="fx-canvas" style="position:fixed;top:0;left:0;width:100%;height:100%;z-index:60;pointer-events:none;background:transparent !important;"></canvas>
     <div id="debug-panel" style="position:fixed;top:10px;left:10px;background:rgba(0,0,0,0.6);color:#fff;font-size:12px;padding:6px 8px;border-radius:8px;z-index:999;display:none;"></div>
     
     <!-- Main Content -->
@@ -398,7 +398,9 @@
                         // Sau khi countdown xong
                         setTimeout(() => {
                             // Ẩn countdown
-                            countdownScreen.style.display = 'none';
+                            countdownScreen.style.opacity = '0';
+                            countdownScreen.style.transition = 'opacity 400ms ease';
+                            setTimeout(()=>{ countdownScreen.style.display = 'none'; }, 450);
                             
                             // Hiện main content
                             mainContent.style.display = 'block';
@@ -426,6 +428,17 @@
                     }, 1000);
                 }, 1000);
             }, 500);
+
+            // Fallback đảm bảo không kẹt ở màn hình countdown
+            setTimeout(() => {
+                if (document.getElementById('countdown-screen').style.display !== 'none') {
+                    document.getElementById('countdown-screen').style.display = 'none';
+                    document.getElementById('main-content').style.display = 'block';
+                    ensureAutoplay();
+                    startFallingImages();
+                    startFireworks();
+                }
+            }, 8000);
         }
         
         // ========== ÂM THANH ĐƠN GIẢN ==========
@@ -591,6 +604,11 @@
                     logStatus('debug:'+ (debugVisible?'on':'off'));
                     tapCount=0;
                 }
+                if(tapCount===4){
+                    toggleFireworks();
+                    logStatus('fireworks:toggle');
+                    tapCount=0;
+                }
             });
             
             // Animation cho timeline items
@@ -660,19 +678,24 @@
             setInterval(spawn, 3000);
         }
 
+        let fwRunning = false;
+        let fwParticles = [];
+        let fwCtx, fwCanvas;
         function startFireworks(){
-            const cvs = document.getElementById('fx-canvas');
-            const ctx = cvs.getContext('2d');
+            fwCanvas = document.getElementById('fx-canvas');
+            fwCtx = fwCanvas.getContext('2d');
             function resize(){cvs.width = window.innerWidth; cvs.height = window.innerHeight;}
-            resize();
+            function resizeSafe(){ fwCanvas.width = window.innerWidth; fwCanvas.height = window.innerHeight; }
+            resizeSafe();
             window.addEventListener('resize', resize);
-            const particles=[];
+            fwParticles=[];
             function burst(){
-                const x = Math.random()*cvs.width;
-                const y = Math.random()*cvs.height*0.6 + cvs.height*0.2;
+                if(!fwRunning) return;
+                const x = Math.random()*fwCanvas.width;
+                const y = Math.random()*fwCanvas.height*0.6 + fwCanvas.height*0.2;
                 const colors = ['#ff85a2','#ffd166','#06d6a0','#118ab2','#e6396a'];
                 for(let i=0;i<40;i++){
-                    particles.push({
+                    fwParticles.push({
                         x,y,
                         vx:(Math.random()-0.5)*4,
                         vy:(Math.random()-0.5)*4,
@@ -681,25 +704,33 @@
                     });
                 }
             }
-            setInterval(burst,4000);
+            const burstTimer = setInterval(burst,4000);
             function step(){
-                ctx.clearRect(0,0,cvs.width,cvs.height);
-                for(let i=particles.length-1;i>=0;i--){
-                    const p = particles[i];
+                if(!fwRunning) { fwCtx.clearRect(0,0,fwCanvas.width,fwCanvas.height); requestAnimationFrame(step); return; }
+                fwCtx.clearRect(0,0,fwCanvas.width,fwCanvas.height);
+                for(let i=fwParticles.length-1;i>=0;i--){
+                    const p = fwParticles[i];
                     p.vy += 0.02;
                     p.x += p.vx;
                     p.y += p.vy;
                     p.life -= 1;
-                    ctx.globalCompositeOperation = 'lighter';
-                    ctx.fillStyle = p.color;
-                    ctx.beginPath();
-                    ctx.arc(p.x,p.y,2,0,Math.PI*2);
-                    ctx.fill();
-                    if(p.life<=0) particles.splice(i,1);
+                    fwCtx.globalCompositeOperation = 'lighter';
+                    fwCtx.fillStyle = p.color;
+                    fwCtx.beginPath();
+                    fwCtx.arc(p.x,p.y,2,0,Math.PI*2);
+                    fwCtx.fill();
+                    if(p.life<=0) fwParticles.splice(i,1);
                 }
                 requestAnimationFrame(step);
             }
+            fwRunning = true;
             requestAnimationFrame(step);
+            return () => { clearInterval(burstTimer); fwRunning = false; fwCtx.clearRect(0,0,fwCanvas.width,fwCanvas.height); };
+        }
+
+        function toggleFireworks(){
+            fwRunning = !fwRunning;
+            if(!fwRunning){ if(fwCtx && fwCanvas) fwCtx.clearRect(0,0,fwCanvas.width,fwCanvas.height); }
         }
         
         // ========== KHỞI CHẠY ==========
