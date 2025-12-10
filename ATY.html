@@ -159,15 +159,59 @@
             z-index: 50;
         }
 
-        .falling-img {
+        .falling-item {
             position: absolute;
             top: -10%;
-            opacity: 0.85;
-            will-change: transform;
             animation-name: fall;
             animation-timing-function: linear;
             animation-iteration-count: infinite;
         }
+
+        .falling-img {
+            display: block;
+            opacity: 0.6;
+            filter: blur(1.2px);
+        }
+
+        .sparkle {
+            position: absolute;
+            color: #fff;
+            text-shadow: 0 0 6px rgba(255,255,255,0.9);
+            opacity: 0.8;
+            animation: twinkle 2s ease-in-out infinite;
+            mix-blend-mode: screen;
+            font-size: 14px;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.2; transform: scale(0.8); }
+            50% { opacity: 1; transform: scale(1.2); }
+        }
+
+        .falling-heart {
+            width: 28px;
+            height: 28px;
+            background: #e6396a;
+            transform: rotate(45deg);
+            position: absolute;
+            top: -10%;
+            border-radius: 2px;
+            opacity: 0.7;
+            animation: fall linear infinite, heartbeat 2s infinite;
+        }
+
+        .falling-heart:before,
+        .falling-heart:after {
+            content: '';
+            width: 28px;
+            height: 28px;
+            background: #e6396a;
+            border-radius: 50%;
+            position: absolute;
+        }
+
+        .falling-heart:before { top: -14px; left: 0; }
+        .falling-heart:after { top: 0; left: -14px; }
 
         @keyframes fall {
             0% { transform: translateY(-10vh) rotate(0deg); }
@@ -232,6 +276,8 @@
                 <p style="margin-top: 1rem;">
                     Chuyến đi Đà Lạt đầu tiên cùng nhau, những kỷ niệm không thể quên...
                 </p>
+                <img src="https://raw.githubusercontent.com/LEVUONG47/KYNIEM/main/desktop-wallpaper-1920x1200-px-1985-80and039s-album-android-asia-covers-cyborgs-dean-fiction-girl-robot-robots-roger-s-entertainment-movies.jpg" 
+                     style="width:100%; height:200px; object-fit:cover; border-radius:10px; margin-top:1rem;">
             </div>
         </div>
         
@@ -243,6 +289,8 @@
                 <p style="margin-top: 1rem;">
                     Sinh nhật đầu tiên bên nhau, những món quà và lời chúc ngọt ngào...
                 </p>
+                <img src="https://raw.githubusercontent.com/LEVUONG47/KYNIEM/main/desktop-wallpaper-1920x1200-px-1985-80and039s-album-android-asia-covers-cyborgs-dean-fiction-girl-robot-robots-roger-s-entertainment-movies.jpg" 
+                     style="width:100%; height:200px; object-fit:cover; border-radius:10px; margin-top:1rem;">
             </div>
         </div>
         
@@ -254,6 +302,8 @@
                 <p style="margin-top: 1rem;">
                     Tròn một năm yêu nhau, 365 ngày hạnh phúc bên nhau...
                 </p>
+                <img src="https://raw.githubusercontent.com/LEVUONG47/KYNIEM/main/desktop-wallpaper-1920x1200-px-1985-80and039s-album-android-asia-covers-cyborgs-dean-fiction-girl-robot-robots-roger-s-entertainment-movies.jpg" 
+                     style="width:100%; height:200px; object-fit:cover; border-radius:10px; margin-top:1rem;">
             </div>
         </div>
         
@@ -351,8 +401,7 @@
                                     behavior: 'smooth'
                                 });
                                 
-                                // Thử phát nhạc
-                                tryPlayMusic();
+                                ensureAutoplay();
 
                                 startFallingImages();
                                 
@@ -384,6 +433,38 @@
             }).catch(error => {
                 musicIcon.textContent = '▶️';
             });
+        }
+
+        function ensureAutoplay() {
+            const music = document.getElementById('music');
+            const musicIcon = document.getElementById('music-icon');
+            music.muted = true;
+            music.play().then(() => {
+                isMusicPlaying = true;
+                musicIcon.textContent = '⏸️';
+                setTimeout(() => {
+                    music.muted = false;
+                    fadeVolume(music, 0.5, 1500);
+                }, 600);
+            }).catch(() => {
+                const unlock = () => {
+                    music.muted = false;
+                    tryPlayMusic();
+                };
+                document.addEventListener('pointerdown', unlock, { once: true });
+                document.addEventListener('touchstart', unlock, { once: true });
+            });
+        }
+
+        function fadeVolume(el, target, ms) {
+            const start = el.volume || 0;
+            const t0 = Date.now();
+            function step() {
+                const p = Math.min((Date.now() - t0) / ms, 1);
+                el.volume = start + (target - start) * p;
+                if (p < 1) requestAnimationFrame(step);
+            }
+            requestAnimationFrame(step);
         }
         
         function toggleMusic() {
@@ -496,25 +577,47 @@
             });
             
             items.forEach(item => observer.observe(item));
+
+            const unlockAudio = () => { ensureAutoplay(); };
+            document.addEventListener('pointerdown', unlockAudio, { once: true });
+            document.addEventListener('touchstart', unlockAudio, { once: true });
         }
         
         function startFallingImages() {
             const container = document.getElementById('falling-container');
             function spawn() {
-                const img = document.createElement('img');
-                const src = FALL_IMAGE_URLS[Math.floor(Math.random() * FALL_IMAGE_URLS.length)];
-                img.src = src;
-                img.className = 'falling-img';
-                const size = 30 + Math.random() * 60;
-                img.style.width = size + 'px';
-                img.style.left = Math.random() * 100 + '%';
-                img.style.animationDuration = (6 + Math.random() * 6) + 's';
-                img.style.animationDelay = (-Math.random() * 6) + 's';
-                container.appendChild(img);
-                setTimeout(() => { if (img.parentNode) img.remove(); }, 20000);
+                if (Math.random() < 0.6) {
+                    const wrap = document.createElement('div');
+                    wrap.className = 'falling-item';
+                    const img = document.createElement('img');
+                    img.className = 'falling-img';
+                    img.src = FALL_IMAGE_URLS[Math.floor(Math.random() * FALL_IMAGE_URLS.length)];
+                    const size = 36 + Math.random() * 56;
+                    img.style.width = size + 'px';
+                    wrap.style.left = Math.random() * 100 + '%';
+                    wrap.style.animationDuration = (7 + Math.random() * 7) + 's';
+                    wrap.style.animationDelay = (-Math.random() * 7) + 's';
+                    const star = document.createElement('span');
+                    star.className = 'sparkle';
+                    star.textContent = '✦';
+                    star.style.left = (Math.random() * 70) + '%';
+                    star.style.top = (Math.random() * 70) + '%';
+                    wrap.appendChild(img);
+                    wrap.appendChild(star);
+                    container.appendChild(wrap);
+                    setTimeout(() => { if (wrap.parentNode) wrap.remove(); }, 20000);
+                } else {
+                    const heart = document.createElement('div');
+                    heart.className = 'falling-heart';
+                    heart.style.left = Math.random() * 100 + '%';
+                    heart.style.animationDuration = (7 + Math.random() * 7) + 's';
+                    heart.style.animationDelay = (-Math.random() * 7) + 's';
+                    container.appendChild(heart);
+                    setTimeout(() => { if (heart.parentNode) heart.remove(); }, 20000);
+                }
             }
-            for (let i = 0; i < 15; i++) spawn();
-            setInterval(spawn, 800);
+            for (let i = 0; i < 10; i++) spawn();
+            setInterval(spawn, 2000);
         }
         
         // ========== KHỞI CHẠY ==========
