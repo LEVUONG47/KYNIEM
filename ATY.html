@@ -179,6 +179,7 @@
             animation-name: fall;
             animation-timing-function: linear;
             animation-iteration-count: infinite;
+            z-index: 54;
         }
 
         .falling-img {
@@ -638,9 +639,18 @@
         
         function startFallingImages() {
             const container = document.getElementById('falling-container');
+            const lastLefts = [];
             function spawn() {
                 const r = Math.random();
-                if (r < 0.45) {
+                let left = Math.random() * 100;
+                let tries = 0;
+                while (lastLefts.some(v => Math.abs(v - left) < 8) && tries < 5) {
+                    left = Math.random() * 100;
+                    tries++;
+                }
+                lastLefts.push(left);
+                if (lastLefts.length > 10) lastLefts.shift();
+                if (r < 0.48) {
                     const wrap = document.createElement('div');
                     wrap.className = 'falling-item';
                     const img = document.createElement('img');
@@ -648,7 +658,7 @@
                     img.src = FALL_IMAGE_URLS[Math.floor(Math.random() * FALL_IMAGE_URLS.length)];
                     const size = 44 + Math.random() * 60;
                     img.style.width = size + 'px';
-                    wrap.style.left = Math.random() * 100 + '%';
+                    wrap.style.left = left + '%';
                     wrap.style.animationDuration = (7 + Math.random() * 7) + 's';
                     wrap.style.animationDelay = (-Math.random() * 7) + 's';
                     const star = document.createElement('span');
@@ -660,10 +670,10 @@
                     wrap.appendChild(star);
                     container.appendChild(wrap);
                     setTimeout(() => { if (wrap.parentNode) wrap.remove(); }, 20000);
-                } else if (r < 0.9) {
+                } else if (r < 0.96) {
                     const heart = document.createElement('div');
                     heart.className = 'falling-heart';
-                    heart.style.left = Math.random() * 100 + '%';
+                    heart.style.left = left + '%';
                     heart.style.animationDuration = (7 + Math.random() * 7) + 's';
                     heart.style.animationDelay = (-Math.random() * 7) + 's';
                     container.appendChild(heart);
@@ -674,7 +684,7 @@
                     const star = document.createElement('span');
                     star.className = 'sparkle';
                     star.textContent = '✦';
-                    wrap.style.left = Math.random() * 100 + '%';
+                    wrap.style.left = left + '%';
                     wrap.style.animationDuration = (6 + Math.random() * 6) + 's';
                     wrap.style.animationDelay = (-Math.random() * 6) + 's';
                     wrap.appendChild(star);
