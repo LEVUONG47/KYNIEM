@@ -226,9 +226,7 @@
 </head>
 <body>
     <!-- Âm thanh đơn giản - dùng MP3 trực tiếp -->
-    <audio id="music" loop preload="auto" playsinline autoplay>
-        <source src="https://raw.githubusercontent.com/LEVUONG47/KYNIEM/main/Tram%20D%C3%BCng%20Ch%C3%A2n%20(WM%20Remix)-Jack%20-%20J97.mp3" type="audio/mpeg">
-    </audio>
+    <audio id="music" loop preload="auto" playsinline autoplay crossorigin="anonymous"></audio>
     
     <!-- Nút điều khiển nhạc -->
     <button class="music-btn" id="music-btn">
@@ -336,6 +334,12 @@
         const FALL_IMAGE_URLS = [
             'https://raw.githubusercontent.com/LEVUONG47/KYNIEM/main/desktop-wallpaper-1920x1200-px-1985-80and039s-album-android-asia-covers-cyborgs-dean-fiction-girl-robot-robots-roger-s-entertainment-movies.jpg'
         ];
+        const MUSIC_SOURCES = [
+            'https://levuong47.github.io/KYNIEM/Tr%E1%BA%A1m%20D%E1%BB%ABng%20Ch%C3%A2n%20(WM%20Remix)-Jack%20-%20J97.mp3',
+            'https://raw.githubusercontent.com/LEVUONG47/KYNIEM/main/Tr%E1%BA%A1m%20D%E1%BB%ABng%20Ch%C3%A2n%20(WM%20Remix)-Jack%20-%20J97.mp3',
+            'https://levuong47.github.io/KYNIEM/Tram%20Dung%20Chan%20(WM%20Remix)-Jack%20-%20J97.mp3'
+        ];
+        let musicIndex = 0;
         let debugVisible = false;
         
         // ========== KHỞI TẠO ==========
@@ -360,7 +364,7 @@
             // Chuẩn bị âm thanh
             const music = document.getElementById('music');
             music.volume = 0.5;
-            music.load();
+            setMusicSource(0);
             
             // Bắt đầu countdown
             startCountdown();
@@ -458,8 +462,10 @@
                 document.addEventListener('pointerdown', unlock, { once: true });
                 document.addEventListener('touchstart', unlock, { once: true });
             });
-            ['play','playing','pause','ended'].forEach(ev=>music.addEventListener(ev,()=>logStatus('audio:'+ev)));
-            music.addEventListener('error',()=>logStatus('audio:error'));
+            ['play','playing','pause','ended','canplay','canplaythrough'].forEach(ev=>music.addEventListener(ev,()=>logStatus('audio:'+ev)));
+            music.addEventListener('error',()=>{logStatus('audio:error'); nextMusicSource();});
+            music.addEventListener('stalled',()=>{logStatus('audio:stalled');});
+            music.addEventListener('abort',()=>{logStatus('audio:abort');});
         }
 
         function logStatus(msg){
@@ -705,3 +711,18 @@
     </script>
 </body>
 </html>
+        function setMusicSource(i){
+            const music = document.getElementById('music');
+            musicIndex = i;
+            music.src = MUSIC_SOURCES[musicIndex];
+            music.load();
+            logStatus('audio:src='+music.src);
+        }
+
+        function nextMusicSource(){
+            const next = (musicIndex+1) % MUSIC_SOURCES.length;
+            if(next !== musicIndex){
+                setMusicSource(next);
+                ensureAutoplay();
+            }
+        }
