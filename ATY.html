@@ -51,6 +51,18 @@
             opacity: 1;
             transform: scale(1);
         }
+
+        .gift-btn {
+            margin-top: 24px;
+            padding: 12px 18px;
+            border: none;
+            border-radius: 28px;
+            background: #e6396a;
+            color: #fff;
+            font-size: 1rem;
+            box-shadow: 0 6px 16px rgba(230,57,106,0.4);
+            display: none;
+        }
         
         #main-content {
             display: none;
@@ -198,7 +210,7 @@
             position: absolute;
             top: -10%;
             border-radius: 2px;
-            opacity: 0.9;
+            opacity: 0.8;
             animation: fall linear infinite, heartbeat 2s infinite;
         }
 
@@ -242,6 +254,7 @@
         <div id="count-3" class="countdown-number">3</div>
         <div id="count-2" class="countdown-number">2</div>
         <div id="count-1" class="countdown-number">1</div>
+        <button id="gift-btn" class="gift-btn">Nhấp để nhận quà 🎁</button>
     </div>
 
     <div id="falling-container"></div>
@@ -395,31 +408,9 @@
                         
                         // Sau khi countdown xong
                         setTimeout(() => {
-                            // Ẩn countdown
-                            countdownScreen.style.opacity = '0';
-                            countdownScreen.style.transition = 'opacity 400ms ease';
-                            setTimeout(()=>{ countdownScreen.style.display = 'none'; }, 450);
-                            
-                            // Hiện main content
-                            mainContent.style.display = 'block';
-                            
-                            // Cuộn đến section đầu tiên
-                            setTimeout(() => {
-                                document.getElementById('section1').scrollIntoView({
-                                    behavior: 'smooth'
-                                });
-                                
-                                ensureAutoplay();
-
-                                startFallingImages();
-                                startFireworks();
-                                
-                                // Tự động cuộn
-                                setTimeout(() => {
-                                    autoScrollToNext();
-                                }, 5000);
-                                
-                            }, 500);
+                            // Hiện nút quà để người dùng nhấp một lần mở khóa âm thanh
+                            const giftBtn = document.getElementById('gift-btn');
+                            giftBtn.style.display = 'inline-block';
                             
                         }, 500);
                         
@@ -427,7 +418,7 @@
                 }, 1000);
             }, 500);
 
-            // Fallback đảm bảo không kẹt ở màn hình countdown
+            // Fallback đảm bảo không kẹt ở màn hình countdown nếu người dùng không nhấp
             setTimeout(() => {
                 if (document.getElementById('countdown-screen').style.display !== 'none') {
                     document.getElementById('countdown-screen').style.display = 'none';
@@ -436,7 +427,7 @@
                     startFallingImages();
                     startFireworks();
                 }
-            }, 8000);
+            }, 12000);
         }
         
         // ========== ÂM THANH ĐƠN GIẢN ==========
@@ -578,6 +569,22 @@
                 userTouched = true;
             });
             
+            // Nút quà: nhấp 1 lần để phát nhạc và bắt đầu trải nghiệm
+            document.getElementById('gift-btn').addEventListener('click', function(){
+                userTouched = true;
+                ensureAutoplay();
+                const countdownScreen = document.getElementById('countdown-screen');
+                countdownScreen.style.display = 'none';
+                const mainContent = document.getElementById('main-content');
+                mainContent.style.display = 'block';
+                setTimeout(() => {
+                    document.getElementById('section1').scrollIntoView({ behavior: 'smooth' });
+                    startFallingImages();
+                    startFireworks();
+                    setTimeout(autoScrollToNext, 5000);
+                }, 300);
+            });
+
             // Chạm để bật/tắt auto scroll
             let lastTap = 0;
             let tapCount = 0;
@@ -630,7 +637,8 @@
         function startFallingImages() {
             const container = document.getElementById('falling-container');
             function spawn() {
-                if (Math.random() < 0.5) {
+                const r = Math.random();
+                if (r < 0.5) {
                     const wrap = document.createElement('div');
                     wrap.className = 'falling-item';
                     const img = document.createElement('img');
@@ -650,7 +658,7 @@
                     wrap.appendChild(star);
                     container.appendChild(wrap);
                     setTimeout(() => { if (wrap.parentNode) wrap.remove(); }, 20000);
-                } else if (Math.random() < 0.9) {
+                } else if (r < 0.95) {
                     const heart = document.createElement('div');
                     heart.className = 'falling-heart';
                     heart.style.left = Math.random() * 100 + '%';
@@ -702,7 +710,7 @@
                     });
                 }
             }
-            const burstTimer = setInterval(burst,4000);
+            const burstTimer = setInterval(burst,2500);
             function step(){
                 if(!fwRunning) { fwCtx.clearRect(0,0,fwCanvas.width,fwCanvas.height); requestAnimationFrame(step); return; }
                 fwCtx.clearRect(0,0,fwCanvas.width,fwCanvas.height);
