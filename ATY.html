@@ -41,8 +41,8 @@
         
         .countdown-wrapper {
             position: relative;
-            width: 280px;
-            height: 280px;
+            width: 300px;
+            height: 300px;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -50,46 +50,62 @@
         
         .countdown-circle {
             position: absolute;
-            width: 280px;
-            height: 280px;
+            width: 300px;
+            height: 300px;
             border-radius: 50%;
-            border: 2px solid rgba(255, 133, 162, 0.2);
-            animation: pulse-ring 2s infinite;
+            border: 3px solid rgba(255, 133, 162, 0.3);
+            animation: pulse-ring 3s infinite;
+            box-shadow: 0 0 60px rgba(230, 57, 106, 0.3),
+                        inset 0 0 30px rgba(255, 133, 162, 0.2);
         }
         
         .countdown-circle-2 {
             width: 240px;
             height: 240px;
-            border: 2px solid rgba(230, 57, 106, 0.3);
+            border: 2px solid rgba(230, 57, 106, 0.4);
             animation-delay: 0.5s;
+            box-shadow: 0 0 40px rgba(255, 133, 162, 0.2),
+                        inset 0 0 20px rgba(255, 133, 162, 0.1);
         }
         
         .countdown-circle-3 {
-            width: 200px;
-            height: 200px;
-            border: 2px solid rgba(255, 195, 113, 0.2);
+            width: 180px;
+            height: 180px;
+            border: 1px solid rgba(255, 195, 113, 0.3);
             animation-delay: 1s;
+            box-shadow: 0 0 30px rgba(255, 195, 113, 0.1),
+                        inset 0 0 15px rgba(255, 195, 113, 0.05);
         }
         
         @keyframes pulse-ring {
-            0% { transform: scale(0.8); opacity: 0.8; }
-            100% { transform: scale(1.2); opacity: 0; }
+            0% { 
+                transform: scale(0.8); 
+                opacity: 0.8; 
+            }
+            50% { 
+                transform: scale(1.1); 
+                opacity: 0.4; 
+            }
+            100% { 
+                transform: scale(0.8); 
+                opacity: 0.8; 
+            }
         }
         
         .countdown-number {
-            font-size: 7rem;
+            font-size: 8rem;
             font-weight: 800;
             color: #ff85a2;
             margin: 0;
             opacity: 0;
-            transform: scale(0.3) rotate(-180deg);
+            transform: scale(0.2) rotate(-180deg);
             text-shadow: 
-                0 0 20px rgba(255, 133, 162, 0.7),
-                0 0 40px rgba(230, 57, 106, 0.5),
-                0 0 60px rgba(230, 57, 106, 0.3);
+                0 0 30px rgba(255, 133, 162, 0.8),
+                0 0 60px rgba(230, 57, 106, 0.6),
+                0 0 90px rgba(230, 57, 106, 0.3);
             transition: all 0.8s cubic-bezier(0.68, -0.55, 0.27, 1.55);
-            position: relative;
-            z-index: 10;
+            position: absolute;
+            z-index: 20;
         }
         
         .countdown-number.active {
@@ -97,127 +113,148 @@
             transform: scale(1) rotate(0deg);
         }
         
-        .countdown-number::after {
+        .countdown-number.hidden {
+            opacity: 0 !important;
+            transform: scale(0) !important;
+            pointer-events: none;
+        }
+        
+        .enter-btn {
+            position: absolute;
+            width: 180px;
+            height: 180px;
+            background: radial-gradient(circle, #e6396a 0%, #ff477e 100%);
+            border-radius: 50%;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            opacity: 0;
+            transform: scale(0.5);
+            transition: all 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: 
+                0 0 80px rgba(230, 57, 106, 0.6),
+                0 20px 40px rgba(0, 0, 0, 0.3),
+                inset 0 10px 20px rgba(255, 255, 255, 0.2);
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            z-index: 25;
+            overflow: hidden;
+        }
+        
+        .enter-btn.active {
+            display: flex;
+            opacity: 1;
+            transform: scale(1);
+            animation: pulse-heart 2s infinite;
+        }
+        
+        .enter-btn::before {
             content: '';
             position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 120%;
-            height: 120%;
-            background: radial-gradient(circle, rgba(255,133,162,0.2) 0%, rgba(230,57,106,0) 70%);
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: conic-gradient(
+                transparent, transparent, transparent,
+                rgba(255, 255, 255, 0.3),
+                transparent, transparent, transparent,
+                rgba(255, 255, 255, 0.3)
+            );
+            animation: rotate-border 3s linear infinite;
+        }
+        
+        .enter-btn-content {
+            position: relative;
+            z-index: 2;
+            background: radial-gradient(circle, #e6396a 0%, #ff477e 100%);
+            width: calc(100% - 8px);
+            height: calc(100% - 8px);
             border-radius: 50%;
-            z-index: -1;
-            opacity: 0;
-            transition: opacity 0.5s;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
         }
         
-        .countdown-number.active::after {
-            opacity: 1;
-            animation: glow 1s ease-out;
-        }
-        
-        @keyframes glow {
-            0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; }
-            50% { opacity: 1; }
-            100% { transform: translate(-50%, -50%) scale(1.5); opacity: 0; }
-        }
-        
-        .countdown-title {
-            font-size: 1.5rem;
-            color: rgba(255, 255, 255, 0.8);
-            margin-top: 2rem;
+        .enter-text {
+            color: white;
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin-bottom: 8px;
             text-align: center;
-            opacity: 0;
-            transform: translateY(20px);
-            animation: fadeInUp 0.5s 3.5s forwards;
-            font-weight: 300;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
             letter-spacing: 2px;
-            text-transform: uppercase;
         }
         
-        @keyframes fadeInUp {
-            to {
-                opacity: 1;
-                transform: translateY(0);
+        .enter-icon {
+            font-size: 2.5rem;
+            margin-top: 5px;
+            animation: float 3s ease-in-out infinite;
+            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        @keyframes pulse-heart {
+            0%, 100% { 
+                transform: scale(1);
+                box-shadow: 
+                    0 0 80px rgba(230, 57, 106, 0.6),
+                    0 20px 40px rgba(0, 0, 0, 0.3),
+                    inset 0 10px 20px rgba(255, 255, 255, 0.2);
+            }
+            50% { 
+                transform: scale(1.05);
+                box-shadow: 
+                    0 0 100px rgba(230, 57, 106, 0.8),
+                    0 25px 50px rgba(0, 0, 0, 0.4),
+                    inset 0 15px 25px rgba(255, 255, 255, 0.3);
             }
         }
         
-        .gift-btn {
-            margin-top: 2rem;
-            padding: 16px 32px;
-            border: none;
-            border-radius: 50px;
-            background: linear-gradient(135deg, #e6396a 0%, #ff85a2 100%);
-            color: white;
-            font-size: 1.1rem;
-            font-weight: 600;
-            letter-spacing: 1px;
-            box-shadow: 
-                0 10px 30px rgba(230, 57, 106, 0.4),
-                inset 0 1px 0 rgba(255, 255, 255, 0.3);
-            display: none;
-            opacity: 0;
-            transform: translateY(20px);
-            animation: fadeInUp 0.5s 4s forwards;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-            z-index: 10;
-        }
-        
-        .gift-btn::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-            transition: 0.5s;
-        }
-        
-        .gift-btn:hover::before {
-            left: 100%;
-        }
-        
-        .gift-btn:active {
-            transform: scale(0.95);
-            box-shadow: 0 5px 15px rgba(230, 57, 106, 0.4);
+        @keyframes rotate-border {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
         
         /* Countdown hearts */
         .countdown-heart {
             position: absolute;
-            width: 24px;
-            height: 24px;
+            width: 28px;
+            height: 28px;
             background: #e6396a;
             transform: rotate(45deg);
             opacity: 0;
-            z-index: 5;
-            box-shadow: 0 2px 10px rgba(230, 57, 106, 0.5);
+            z-index: 15;
+            box-shadow: 0 4px 20px rgba(230, 57, 106, 0.6);
             animation: countdownHeartFall linear infinite;
+            border-radius: 3px;
         }
         
         .countdown-heart::before,
         .countdown-heart::after {
             content: '';
-            width: 24px;
-            height: 24px;
+            width: 28px;
+            height: 28px;
             background: #e6396a;
             border-radius: 50%;
             position: absolute;
         }
         
         .countdown-heart::before { 
-            top: -12px; 
+            top: -14px; 
             left: 0; 
         }
         
         .countdown-heart::after { 
             top: 0; 
-            left: -12px; 
+            left: -14px; 
         }
         
         @keyframes countdownHeartFall {
@@ -232,40 +269,114 @@
                 opacity: 1;
             }
             100% { 
-                transform: rotate(45deg) translateY(100vh) rotate(360deg);
+                transform: rotate(45deg) translateY(100vh) rotate(720deg);
                 opacity: 0;
             }
         }
         
-        .heart-pulse {
+        .sparkle-dot {
             position: absolute;
-            width: 100%;
-            height: 100%;
-            z-index: 1;
-        }
-        
-        .heart-pulse-dot {
-            position: absolute;
-            width: 8px;
-            height: 8px;
+            width: 6px;
+            height: 6px;
             background: #ff85a2;
             border-radius: 50%;
-            animation: pulseDot 2s infinite;
+            opacity: 0;
+            z-index: 10;
+            box-shadow: 0 0 15px #ff85a2;
+            animation: sparkleTwinkle 2s infinite;
         }
         
-        @keyframes pulseDot {
+        @keyframes sparkleTwinkle {
             0%, 100% { 
+                transform: scale(0.3);
+                opacity: 0.1;
+            }
+            50% { 
                 transform: scale(1);
                 opacity: 0.8;
             }
-            50% { 
-                transform: scale(2);
-                opacity: 0.2;
+        }
+        
+        /* Main content */
+        #main-content {
+            display: none;
+            position: relative;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        /* New: Shining hearts in main content */
+        .shining-heart {
+            position: absolute;
+            width: 35px;
+            height: 35px;
+            background: #e6396a;
+            transform: rotate(45deg);
+            opacity: 0.9;
+            z-index: 5;
+            box-shadow: 0 4px 25px rgba(230, 57, 106, 0.7),
+                        inset 0 2px 10px rgba(255, 255, 255, 0.4);
+            animation: shineFloat linear infinite;
+            border-radius: 4px;
+        }
+        
+        .shining-heart::before,
+        .shining-heart::after {
+            content: '';
+            width: 35px;
+            height: 35px;
+            background: #e6396a;
+            border-radius: 50%;
+            position: absolute;
+        }
+        
+        .shining-heart::before { 
+            top: -17.5px; 
+            left: 0; 
+        }
+        
+        .shining-heart::after { 
+            top: 0; 
+            left: -17.5px; 
+        }
+        
+        @keyframes shineFloat {
+            0% { 
+                transform: rotate(45deg) translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% { 
+                opacity: 0.8;
+            }
+            90% { 
+                opacity: 0.8;
+            }
+            100% { 
+                transform: rotate(45deg) translateY(-100px) rotate(720deg);
+                opacity: 0;
             }
         }
         
-        #main-content {
-            display: none;
+        .shining-heart .spark {
+            position: absolute;
+            width: 15px;
+            height: 15px;
+            background: white;
+            border-radius: 50%;
+            opacity: 0;
+            filter: blur(2px);
+            animation: sparkFlash 1.5s infinite;
+        }
+        
+        @keyframes sparkFlash {
+            0%, 100% { 
+                transform: scale(0.2);
+                opacity: 0;
+            }
+            50% { 
+                transform: scale(0.8);
+                opacity: 0.8;
+            }
         }
         
         /* Các phần CSS khác giữ nguyên */
@@ -275,30 +386,38 @@
             display: flex;
             flex-direction: column;
             justify-content: center;
+            position: relative;
+            z-index: 2;
         }
         
         h1 {
             color: #e6396a;
-            font-size: 2.5rem;
+            font-size: 2.8rem;
             text-align: center;
             margin-bottom: 1rem;
+            text-shadow: 0 4px 15px rgba(230, 57, 106, 0.3);
         }
         
         h2 {
             color: #e6396a;
-            font-size: 2rem;
+            font-size: 2.3rem;
             text-align: center;
             margin: 2rem 0;
+            text-shadow: 0 3px 10px rgba(230, 57, 106, 0.2);
         }
         
         .heart {
-            width: 150px;
-            height: 150px;
-            background: #e6396a;
+            width: 180px;
+            height: 180px;
+            background: linear-gradient(135deg, #e6396a 0%, #ff85a2 100%);
             margin: 2rem auto;
             position: relative;
             transform: rotate(45deg);
             animation: heartbeat 1.5s infinite;
+            box-shadow: 
+                0 15px 40px rgba(230, 57, 106, 0.4),
+                inset 0 10px 20px rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
         }
         
         @keyframes heartbeat {
@@ -309,61 +428,75 @@
         .heart:before,
         .heart:after {
             content: '';
-            width: 150px;
-            height: 150px;
-            background: #e6396a;
+            width: 180px;
+            height: 180px;
+            background: linear-gradient(135deg, #e6396a 0%, #ff85a2 100%);
             border-radius: 50%;
             position: absolute;
         }
         
         .heart:before {
-            top: -75px;
+            top: -90px;
             left: 0;
         }
         
         .heart:after {
             top: 0;
-            left: -75px;
+            left: -90px;
         }
         
         .timeline-item {
-            background: white;
+            background: rgba(255, 255, 255, 0.95);
             margin: 1.5rem 0;
-            padding: 1.5rem;
-            border-radius: 15px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            padding: 1.8rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1),
+                        0 5px 15px rgba(230, 57, 106, 0.1);
             opacity: 0;
-            transform: translateY(20px);
-            transition: all 0.5s ease;
+            transform: translateY(30px);
+            transition: all 0.6s ease;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
         }
         
         .message-box {
-            background: white;
-            padding: 2rem;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 2.5rem;
             margin: 2rem auto;
-            border-radius: 20px;
+            border-radius: 25px;
             max-width: 400px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.15),
+                        0 8px 25px rgba(230, 57, 106, 0.15);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
         }
         
         .music-btn {
             position: fixed;
-            bottom: 20px;
-            right: 20px;
-            width: 50px;
-            height: 50px;
-            background: #e6396a;
+            bottom: 25px;
+            right: 25px;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #e6396a 0%, #ff85a2 100%);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
-            font-size: 1.2rem;
+            font-size: 1.5rem;
             z-index: 100;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
             border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 3px solid rgba(255, 255, 255, 0.3);
         }
-
+        
+        .music-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.4);
+        }
+        
         #falling-container {
             position: fixed;
             top: 0;
@@ -371,7 +504,7 @@
             width: 100%;
             height: 100%;
             pointer-events: none;
-            z-index: 50;
+            z-index: 1;
         }
 
         .falling-item {
@@ -380,7 +513,7 @@
             animation-name: fall;
             animation-timing-function: linear;
             animation-iteration-count: infinite;
-            z-index: 54;
+            z-index: 1;
         }
 
         .falling-img {
@@ -392,11 +525,11 @@
         .sparkle {
             position: absolute;
             color: #fff;
-            text-shadow: 0 0 6px rgba(255,255,255,0.9);
+            text-shadow: 0 0 10px rgba(255,255,255,0.9);
             opacity: 0.8;
             animation: twinkle 2s ease-in-out infinite;
             mix-blend-mode: screen;
-            font-size: 14px;
+            font-size: 16px;
         }
 
         @keyframes twinkle {
@@ -405,49 +538,50 @@
         }
 
         .falling-heart {
-            width: 40px;
-            height: 40px;
-            background: #e6396a;
+            width: 45px;
+            height: 45px;
+            background: linear-gradient(135deg, #e6396a 0%, #ff85a2 100%);
             transform: rotate(45deg);
             position: absolute;
             top: -10%;
-            border-radius: 2px;
-            opacity: 0.7;
-            z-index: 55;
-            box-shadow: 0 2px 8px rgba(230, 57, 106, 0.4);
-            animation: fall linear infinite, heartbeat 2s infinite;
+            border-radius: 3px;
+            opacity: 0.8;
+            z-index: 2;
+            box-shadow: 0 5px 20px rgba(230, 57, 106, 0.5);
+            animation: fall linear infinite, heartbeat 2.5s infinite;
+            border: 2px solid rgba(255, 255, 255, 0.2);
         }
 
         .falling-heart:before,
         .falling-heart:after {
             content: '';
-            width: 28px;
-            height: 28px;
-            background: #e6396a;
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, #e6396a 0%, #ff85a2 100%);
             border-radius: 50%;
             position: absolute;
         }
 
-        .falling-heart:before { top: -14px; left: 0; }
-        .falling-heart:after { top: 0; left: -14px; }
+        .falling-heart:before { top: -16px; left: 0; }
+        .falling-heart:after { top: 0; left: -16px; }
 
         @keyframes fall {
-            0% { transform: translateY(-10vh) rotate(0deg); }
-            100% { transform: translateY(110vh) rotate(360deg); }
+            0% { transform: rotate(45deg) translateY(-10vh) rotate(0deg); }
+            100% { transform: rotate(45deg) translateY(110vh) rotate(720deg); }
         }
         
         @media (min-width: 768px) {
-            h1 { font-size: 3rem; }
-            h2 { font-size: 2.5rem; }
+            h1 { font-size: 3.5rem; }
+            h2 { font-size: 2.8rem; }
             
             .countdown-wrapper {
-                width: 320px;
-                height: 320px;
+                width: 350px;
+                height: 350px;
             }
             
             .countdown-circle {
-                width: 320px;
-                height: 320px;
+                width: 350px;
+                height: 350px;
             }
             
             .countdown-circle-2 {
@@ -456,12 +590,25 @@
             }
             
             .countdown-circle-3 {
-                width: 240px;
-                height: 240px;
+                width: 210px;
+                height: 210px;
             }
             
             .countdown-number {
-                font-size: 8rem;
+                font-size: 9rem;
+            }
+            
+            .enter-btn {
+                width: 200px;
+                height: 200px;
+            }
+            
+            .enter-text {
+                font-size: 1.6rem;
+            }
+            
+            .enter-icon {
+                font-size: 3rem;
             }
         }
     </style>
@@ -479,8 +626,6 @@
     
     <!-- Countdown Screen -->
     <div id="countdown-screen">
-        <div class="heart-pulse" id="heart-pulse"></div>
-        
         <div class="countdown-wrapper">
             <div class="countdown-circle"></div>
             <div class="countdown-circle countdown-circle-2"></div>
@@ -489,22 +634,27 @@
             <div id="count-3" class="countdown-number">3</div>
             <div id="count-2" class="countdown-number">2</div>
             <div id="count-1" class="countdown-number">1</div>
+            
+            <div id="enter-btn" class="enter-btn">
+                <div class="enter-btn-content">
+                    <div class="enter-text">Chạm vào trái tim</div>
+                    <div class="enter-icon">💖</div>
+                </div>
+            </div>
         </div>
-        
-        <h2 class="countdown-title">Kỷ Niệm 1 Năm</h2>
-        <button id="gift-btn" class="gift-btn">Nhận Quà Tình Yêu 💝</button>
     </div>
 
     <div id="falling-container"></div>
-    <canvas id="fx-canvas" style="position:fixed;top:0;left:0;width:100%;height:100%;z-index:60;pointer-events:none;background:transparent !important;"></canvas>
-    <div id="debug-panel" style="position:fixed;top:10px;left:10px;background:rgba(0,0,0,0.6);color:#fff;font-size:12px;padding:6px 8px;border-radius:8px;z-index:999;display:none;"></div>
+    <canvas id="fx-canvas" style="position:fixed;top:0;left:0;width:100%;height:100%;z-index:3;pointer-events:none;background:transparent !important;"></canvas>
     
     <!-- Main Content -->
     <div id="main-content">
+        <div id="shining-hearts-container"></div>
+        
         <!-- Section 1 -->
         <div class="content-section" id="section1">
             <h1>365 Ngày Yêu Thương</h1>
-            <p style="text-align: center; color: #666; margin-bottom: 2rem;">
+            <p style="text-align: center; color: #666; margin-bottom: 2rem; font-size: 1.2rem;">
                 Kỷ niệm trọn vẹn một năm bên nhau
             </p>
             <div class="heart"></div>
@@ -514,12 +664,12 @@
         <div class="content-section" id="section2">
             <h2>Ngày Chúng Ta Gặp</h2>
             <div class="timeline-item">
-                <h3 style="color: #e6396a;">12/12/2023</h3>
-                <p style="margin-top: 1rem;">
+                <h3 style="color: #e6396a; margin-bottom: 1rem;">12/12/2023</h3>
+                <p style="margin-top: 1rem; line-height: 1.8;">
                     Ngày đầu tiên chúng ta gặp nhau, trái tim như có tiếng sét ái tình...
                 </p>
                 <img src="https://raw.githubusercontent.com/LEVUONG47/KYNIEM/main/desktop-wallpaper-1920x1200-px-1985-80and039s-album-android-asia-covers-cyborgs-dean-fiction-girl-robot-robots-roger-s-entertainment-movies.jpg" 
-                     style="width:100%; height:200px; object-fit:cover; border-radius:10px; margin-top:1rem;">
+                     style="width:100%; height:200px; object-fit:cover; border-radius:15px; margin-top:1.5rem; border: 3px solid rgba(230, 57, 106, 0.2);">
             </div>
         </div>
         
@@ -527,12 +677,12 @@
         <div class="content-section" id="section3">
             <h2>Chuyến Đi Đầu Tiên</h2>
             <div class="timeline-item">
-                <h3 style="color: #e6396a;">Tháng 1/2024</h3>
-                <p style="margin-top: 1rem;">
+                <h3 style="color: #e6396a; margin-bottom: 1rem;">Tháng 1/2024</h3>
+                <p style="margin-top: 1rem; line-height: 1.8;">
                     Chuyến đi Đà Lạt đầu tiên cùng nhau, những kỷ niệm không thể quên...
                 </p>
                 <img src="https://raw.githubusercontent.com/LEVUONG47/KYNIEM/main/desktop-wallpaper-1920x1200-px-1985-80and039s-album-android-asia-covers-cyborgs-dean-fiction-girl-robot-robots-roger-s-entertainment-movies.jpg" 
-                     style="width:100%; height:200px; object-fit:cover; border-radius:10px; margin-top:1rem;">
+                     style="width:100%; height:200px; object-fit:cover; border-radius:15px; margin-top:1.5rem; border: 3px solid rgba(230, 57, 106, 0.2);">
             </div>
         </div>
         
@@ -540,12 +690,12 @@
         <div class="content-section" id="section4">
             <h2>Sinh Nhật Đầu Tiên</h2>
             <div class="timeline-item">
-                <h3 style="color: #e6396a;">Tháng 6/2024</h3>
-                <p style="margin-top: 1rem;">
+                <h3 style="color: #e6396a; margin-bottom: 1rem;">Tháng 6/2024</h3>
+                <p style="margin-top: 1rem; line-height: 1.8;">
                     Sinh nhật đầu tiên bên nhau, những món quà và lời chúc ngọt ngào...
                 </p>
                 <img src="https://raw.githubusercontent.com/LEVUONG47/KYNIEM/main/desktop-wallpaper-1920x1200-px-1985-80and039s-album-android-asia-covers-cyborgs-dean-fiction-girl-robot-robots-roger-s-entertainment-movies.jpg" 
-                     style="width:100%; height:200px; object-fit:cover; border-radius:10px; margin-top:1rem;">
+                     style="width:100%; height:200px; object-fit:cover; border-radius:15px; margin-top:1.5rem; border: 3px solid rgba(230, 57, 106, 0.2);">
             </div>
         </div>
         
@@ -553,12 +703,12 @@
         <div class="content-section" id="section5">
             <h2>Trọn Vẹn Một Năm</h2>
             <div class="timeline-item">
-                <h3 style="color: #e6396a;">12/12/2024</h3>
-                <p style="margin-top: 1rem;">
+                <h3 style="color: #e6396a; margin-bottom: 1rem;">12/12/2024</h3>
+                <p style="margin-top: 1rem; line-height: 1.8;">
                     Tròn một năm yêu nhau, 365 ngày hạnh phúc bên nhau...
                 </p>
                 <img src="https://raw.githubusercontent.com/LEVUONG47/KYNIEM/main/desktop-wallpaper-1920x1200-px-1985-80and039s-album-android-asia-covers-cyborgs-dean-fiction-girl-robot-robots-roger-s-entertainment-movies.jpg" 
-                     style="width:100%; height:200px; object-fit:cover; border-radius:10px; margin-top:1rem;">
+                     style="width:100%; height:200px; object-fit:cover; border-radius:15px; margin-top:1.5rem; border: 3px solid rgba(230, 57, 106, 0.2);">
             </div>
         </div>
         
@@ -566,7 +716,7 @@
         <div class="content-section" id="section6">
             <h2>Thông Điệp Từ Trái Tim</h2>
             <div class="message-box">
-                <p style="line-height: 1.6;">
+                <p style="line-height: 1.8; font-size: 1.1rem;">
                     Một năm trôi qua thật nhanh, nhưng cũng thật trọn vẹn. 
                     Mỗi ngày bên em là một trang mới trong cuốn sách tình yêu của anh. 
                     <span style="color: #e6396a; font-weight: bold;">Cảm ơn em</span> đã đến bên anh, cho anh những khoảnh khắc ngọt ngào...
@@ -575,8 +725,8 @@
         </div>
         
         <!-- Footer -->
-        <div style="text-align: center; padding: 3rem 1rem; color: #666;">
-            <p>Trang web được tạo với tất cả tình yêu 💖</p>
+        <div style="text-align: center; padding: 3rem 1rem; color: #666; position: relative; z-index: 2;">
+            <p style="font-size: 1.1rem;">Trang web được tạo với tất cả tình yêu 💖</p>
         </div>
     </div>
 
@@ -590,8 +740,9 @@
             'https://raw.githubusercontent.com/LEVUONG47/KYNIEM/main/desktop-wallpaper-1920x1200-px-1985-80and039s-album-android-asia-covers-cyborgs-dean-fiction-girl-robot-robots-roger-s-entertainment-movies.jpg'
         ];
         
-        let debugVisible = false;
         let heartInterval;
+        let sparkleInterval;
+        let shiningHeartsInterval;
         
         // ========== KHỞI TẠO ==========
         function isSupportedMobile() {
@@ -619,14 +770,13 @@
             
             // Khởi tạo hiệu ứng trong countdown
             createCountdownHearts();
-            createPulseDots();
+            createSparkleDots();
             
             // Bắt đầu countdown
             startCountdown();
             
             // Setup sự kiện
             setupEvents();
-            
         }
         
         // ========== HIỆU ỨNG COUNTDOWN ==========
@@ -640,9 +790,9 @@
                 
                 // Vị trí ngẫu nhiên
                 const left = Math.random() * 100;
-                const size = 16 + Math.random() * 20;
-                const duration = 3 + Math.random() * 2;
-                const delay = Math.random() * 2;
+                const size = 20 + Math.random() * 25;
+                const duration = 4 + Math.random() * 3;
+                const delay = Math.random() * 3;
                 
                 heart.style.left = `${left}%`;
                 heart.style.width = `${size}px`;
@@ -650,11 +800,15 @@
                 heart.style.animationDuration = `${duration}s`;
                 heart.style.animationDelay = `-${delay}s`;
                 
-                // Màu sắc ngẫu nhiên
-                const colors = ['#e6396a', '#ff85a2', '#ff477e', '#ff5d8f'];
+                // Màu sắc gradient
+                const colors = [
+                    'linear-gradient(135deg, #e6396a 0%, #ff85a2 100%)',
+                    'linear-gradient(135deg, #ff477e 0%, #ff85a2 100%)',
+                    'linear-gradient(135deg, #ff006e 0%, #ff85a2 100%)'
+                ];
                 const color = colors[Math.floor(Math.random() * colors.length)];
                 heart.style.background = color;
-                heart.style.boxShadow = `0 2px 10px ${color}80`;
+                heart.style.boxShadow = `0 4px 25px rgba(230, 57, 106, 0.7)`;
                 
                 countdownScreen.appendChild(heart);
                 
@@ -665,34 +819,43 @@
                     }
                 }, (duration + delay) * 1000);
                 
-            }, 200); // Mỗi 200ms tạo một trái tim mới
+            }, 150); // Mỗi 150ms tạo một trái tim mới
         }
         
-        function createPulseDots() {
-            const pulseContainer = document.getElementById('heart-pulse');
+        function createSparkleDots() {
+            const countdownScreen = document.getElementById('countdown-screen');
             
-            for (let i = 0; i < 20; i++) {
+            // Tạo các điểm sáng lấp lánh
+            sparkleInterval = setInterval(() => {
                 const dot = document.createElement('div');
-                dot.className = 'heart-pulse-dot';
+                dot.className = 'sparkle-dot';
                 
                 const left = Math.random() * 100;
                 const top = Math.random() * 100;
                 const delay = Math.random() * 2;
-                const size = 4 + Math.random() * 6;
+                const duration = 1 + Math.random() * 2;
                 
                 dot.style.left = `${left}%`;
                 dot.style.top = `${top}%`;
                 dot.style.animationDelay = `${delay}s`;
-                dot.style.width = `${size}px`;
-                dot.style.height = `${size}px`;
+                dot.style.animationDuration = `${duration}s`;
                 
                 // Màu sắc ngẫu nhiên
-                const colors = ['#e6396a', '#ff85a2', '#ff477e', '#ff9a9e'];
+                const colors = ['#ff85a2', '#ffd166', '#06d6a0', '#118ab2'];
                 const color = colors[Math.floor(Math.random() * colors.length)];
                 dot.style.background = color;
+                dot.style.boxShadow = `0 0 20px ${color}`;
                 
-                pulseContainer.appendChild(dot);
-            }
+                countdownScreen.appendChild(dot);
+                
+                // Tự động xóa
+                setTimeout(() => {
+                    if (dot.parentNode) {
+                        dot.remove();
+                    }
+                }, (duration + delay) * 1000);
+                
+            }, 300); // Mỗi 300ms tạo một điểm sáng
         }
         
         // ========== COUNTDOWN ==========
@@ -700,95 +863,94 @@
             const count3 = document.getElementById('count-3');
             const count2 = document.getElementById('count-2');
             const count1 = document.getElementById('count-1');
-            const countdownScreen = document.getElementById('countdown-screen');
-            const mainContent = document.getElementById('main-content');
+            const enterBtn = document.getElementById('enter-btn');
             
             // Hiệu ứng số 3
             setTimeout(() => {
                 count3.classList.add('active');
                 
-                // Tạo hiệu ứng vụ nổ trái tim cho số 3
-                createHeartBurst(50, 50, '#e6396a');
+                // Hiệu ứng vụ nổ cho số 3
+                createHeartExplosion(50, 50);
                 
                 setTimeout(() => {
                     count3.classList.remove('active');
                     count2.classList.add('active');
                     
-                    // Tạo hiệu ứng vụ nổ trái tim cho số 2
-                    createHeartBurst(50, 50, '#ff85a2');
+                    // Hiệu ứng vụ nổ cho số 2
+                    createHeartExplosion(50, 50);
                     
                     setTimeout(() => {
                         count2.classList.remove('active');
                         count1.classList.add('active');
                         
-                        // Tạo hiệu ứng vụ nổ trái tim cho số 1
-                        createHeartBurst(50, 50, '#ff477e');
+                        // Hiệu ứng vụ nổ cho số 1
+                        createHeartExplosion(50, 50);
                         
                         // Sau khi countdown xong
                         setTimeout(() => {
-                            // Hiện nút quà để người dùng nhấp một lần mở khóa âm thanh
-                            const giftBtn = document.getElementById('gift-btn');
-                            giftBtn.style.display = 'inline-block';
+                            // Ẩn tất cả số đi
+                            count3.classList.add('hidden');
+                            count2.classList.add('hidden');
+                            count1.classList.add('hidden');
                             
-                            // Dừng tạo trái tim mới
+                            // Hiện nút chạm
+                            enterBtn.classList.add('active');
+                            
+                            // Dừng tạo trái tim và điểm sáng mới
                             clearInterval(heartInterval);
+                            clearInterval(sparkleInterval);
                             
-                        }, 500);
+                        }, 800);
                         
                     }, 1000);
                 }, 1000);
             }, 500);
-            
-            // Fallback đảm bảo không kẹt ở màn hình countdown
-            setTimeout(() => {
-                if (document.getElementById('countdown-screen').style.display !== 'none') {
-                    document.getElementById('countdown-screen').style.display = 'none';
-                    document.getElementById('main-content').style.display = 'block';
-                    ensureAutoplay();
-                    startFallingImages();
-                    startFireworks();
-                }
-            }, 12000);
         }
         
-        function createHeartBurst(xPercent, yPercent, color) {
+        function createHeartExplosion(xPercent, yPercent) {
             const countdownScreen = document.getElementById('countdown-screen');
             
-            for (let i = 0; i < 12; i++) {
+            for (let i = 0; i < 15; i++) {
                 const heart = document.createElement('div');
                 heart.className = 'countdown-heart';
                 
-                const angle = (i / 12) * Math.PI * 2;
-                const speed = 2;
+                const angle = (i / 15) * Math.PI * 2;
+                const speed = 1.5 + Math.random() * 1.5;
                 const vx = Math.cos(angle) * speed;
                 const vy = Math.sin(angle) * speed;
+                const size = 15 + Math.random() * 20;
                 
                 heart.style.left = `${xPercent}%`;
                 heart.style.top = `${yPercent}%`;
-                heart.style.background = color;
-                heart.style.boxShadow = `0 2px 10px ${color}80`;
+                heart.style.width = `${size}px`;
+                heart.style.height = `${size}px`;
+                heart.style.background = 'linear-gradient(135deg, #e6396a 0%, #ff85a2 100%)';
+                heart.style.boxShadow = `0 4px 20px rgba(230, 57, 106, 0.7)`;
                 heart.style.animation = 'none';
                 heart.style.opacity = '1';
                 heart.style.transform = 'rotate(45deg)';
                 
                 countdownScreen.appendChild(heart);
                 
-                // Animation burst
+                // Animation explosion
                 let posX = xPercent;
                 let posY = yPercent;
                 let opacity = 1;
+                let scale = 1;
                 
-                function animateBurst() {
+                function animateExplosion() {
                     posX += vx;
                     posY += vy;
                     opacity -= 0.02;
+                    scale -= 0.01;
                     
                     heart.style.left = `${posX}%`;
                     heart.style.top = `${posY}%`;
                     heart.style.opacity = opacity;
+                    heart.style.transform = `rotate(45deg) scale(${scale})`;
                     
                     if (opacity > 0) {
-                        requestAnimationFrame(animateBurst);
+                        requestAnimationFrame(animateExplosion);
                     } else {
                         if (heart.parentNode) {
                             heart.remove();
@@ -796,8 +958,59 @@
                     }
                 }
                 
-                requestAnimationFrame(animateBurst);
+                requestAnimationFrame(animateExplosion);
             }
+        }
+        
+        // ========== TRÁI TIM LẤP LÁNH TRONG MAIN CONTENT ==========
+        function createShiningHearts() {
+            const container = document.getElementById('shining-hearts-container');
+            
+            shiningHeartsInterval = setInterval(() => {
+                const heart = document.createElement('div');
+                heart.className = 'shining-heart';
+                
+                // Vị trí ngẫu nhiên
+                const left = Math.random() * 100;
+                const size = 25 + Math.random() * 30;
+                const duration = 8 + Math.random() * 6;
+                const delay = Math.random() * 5;
+                
+                heart.style.left = `${left}%`;
+                heart.style.width = `${size}px`;
+                heart.style.height = `${size}px`;
+                heart.style.animationDuration = `${duration}s`;
+                heart.style.animationDelay = `-${delay}s`;
+                
+                // Màu sắc gradient
+                const gradients = [
+                    'linear-gradient(135deg, #e6396a 0%, #ff85a2 100%)',
+                    'linear-gradient(135deg, #ff006e 0%, #ff477e 100%)',
+                    'linear-gradient(135deg, #ff5d8f 0%, #ff97b7 100%)'
+                ];
+                const gradient = gradients[Math.floor(Math.random() * gradients.length)];
+                heart.style.background = gradient;
+                
+                container.appendChild(heart);
+                
+                // Thêm điểm sáng
+                for (let i = 0; i < 3; i++) {
+                    const spark = document.createElement('div');
+                    spark.className = 'spark';
+                    spark.style.left = `${20 + Math.random() * 60}%`;
+                    spark.style.top = `${20 + Math.random() * 60}%`;
+                    spark.style.animationDelay = `${Math.random() * 2}s`;
+                    heart.appendChild(spark);
+                }
+                
+                // Tự động xóa
+                setTimeout(() => {
+                    if (heart.parentNode) {
+                        heart.remove();
+                    }
+                }, (duration + delay) * 1000);
+                
+            }, 400); // Tạo trái tim mới mỗi 400ms
         }
         
         // ========== ÂM THANH ĐƠN GIẢN ==========
@@ -806,7 +1019,6 @@
             const musicBtn = document.getElementById('music-btn');
             const musicIcon = document.getElementById('music-icon');
             
-            // Thử phát nhạc
             music.play().then(() => {
                 console.log("Nhạc đang phát!");
                 isMusicPlaying = true;
@@ -873,10 +1085,9 @@
             isScrolling = true;
             console.log("Bắt đầu tự động cuộn...");
             
-            // Cuộn từ từ
             let scrollPosition = 0;
             const maxScroll = document.body.scrollHeight - window.innerHeight;
-            const duration = 60000; // 60 giây
+            const duration = 60000;
             const startTime = Date.now();
             
             function scrollStep() {
@@ -886,16 +1097,13 @@
                 const elapsed = currentTime - startTime;
                 const progress = Math.min(elapsed / duration, 1);
                 
-                // Tính vị trí cuộn
                 scrollPosition = maxScroll * progress;
                 
-                // Cuộn đến vị trí
                 window.scrollTo({
                     top: scrollPosition,
                     behavior: 'instant'
                 });
                 
-                // Nếu chưa xong, tiếp tục
                 if (progress < 1) {
                     requestAnimationFrame(scrollStep);
                 } else {
@@ -916,7 +1124,6 @@
                 block: 'center'
             });
             
-            // Tự động chuyển section sau 5 giây
             setTimeout(autoScrollToNext, 5000);
         }
         
@@ -929,30 +1136,42 @@
                 userTouched = true;
             });
             
-            // Nút quà: nhấp 1 lần để phát nhạc và bắt đầu trải nghiệm
-            document.getElementById('gift-btn').addEventListener('click', function(){
+            // Nút enter: nhấp vào trái tim để vào trang chính
+            document.getElementById('enter-btn').addEventListener('click', function(){
                 userTouched = true;
                 ensureAutoplay();
+                
                 const countdownScreen = document.getElementById('countdown-screen');
-                countdownScreen.style.display = 'none';
                 const mainContent = document.getElementById('main-content');
-                mainContent.style.display = 'block';
+                
+                // Hiệu ứng chuyển trang
+                countdownScreen.style.opacity = '0';
+                countdownScreen.style.transform = 'scale(1.5)';
+                countdownScreen.style.transition = 'all 1s ease';
+                
                 setTimeout(() => {
-                    document.getElementById('section1').scrollIntoView({ behavior: 'smooth' });
-                    startFallingImages();
-                    startFireworks();
-                    setTimeout(autoScrollToNext, 5000);
-                }, 300);
+                    countdownScreen.style.display = 'none';
+                    mainContent.style.display = 'block';
+                    
+                    // Bắt đầu hiệu ứng trái tim lấp lánh trong main content
+                    createShiningHearts();
+                    
+                    setTimeout(() => {
+                        document.getElementById('section1').scrollIntoView({ behavior: 'smooth' });
+                        startFallingImages();
+                        startFireworks();
+                        setTimeout(autoScrollToNext, 5000);
+                    }, 300);
+                }, 1000);
             });
 
-            // Chạm để bật/tắt auto scroll
+            // Double click để toggle auto scroll
             let lastTap = 0;
             document.addEventListener('click', function(e) {
                 const currentTime = new Date().getTime();
                 const tapLength = currentTime - lastTap;
                 
                 if (tapLength < 300 && tapLength > 0) {
-                    // Double click để toggle auto scroll
                     isScrolling = !isScrolling;
                     if (isScrolling) {
                         startAutoScroll();
@@ -1045,10 +1264,12 @@
         function startFireworks(){
             fwCanvas = document.getElementById('fx-canvas');
             fwCtx = fwCanvas.getContext('2d');
-            function resize(){cvs.width = window.innerWidth; cvs.height = window.innerHeight;}
-            function resizeSafe(){ fwCanvas.width = window.innerWidth; fwCanvas.height = window.innerHeight; }
+            function resizeSafe(){ 
+                fwCanvas.width = window.innerWidth; 
+                fwCanvas.height = window.innerHeight; 
+            }
             resizeSafe();
-            window.addEventListener('resize', resize);
+            window.addEventListener('resize', resizeSafe);
             fwParticles=[];
             function burst(){
                 if(!fwRunning) return;
@@ -1067,7 +1288,11 @@
             }
             const burstTimer = setInterval(burst,2500);
             function step(){
-                if(!fwRunning) { fwCtx.clearRect(0,0,fwCanvas.width,fwCanvas.height); requestAnimationFrame(step); return; }
+                if(!fwRunning) { 
+                    fwCtx.clearRect(0,0,fwCanvas.width,fwCanvas.height); 
+                    requestAnimationFrame(step); 
+                    return; 
+                }
                 fwCtx.clearRect(0,0,fwCanvas.width,fwCanvas.height);
                 for(let i=fwParticles.length-1;i>=0;i--){
                     const p = fwParticles[i];
@@ -1086,16 +1311,21 @@
             }
             fwRunning = true;
             requestAnimationFrame(step);
-            return () => { clearInterval(burstTimer); fwRunning = false; fwCtx.clearRect(0,0,fwCanvas.width,fwCanvas.height); };
+            return () => { 
+                clearInterval(burstTimer); 
+                fwRunning = false; 
+                fwCtx.clearRect(0,0,fwCanvas.width,fwCanvas.height); 
+            };
         }
 
         function toggleFireworks(){
             fwRunning = !fwRunning;
-            if(!fwRunning){ if(fwCtx && fwCanvas) fwCtx.clearRect(0,0,fwCanvas.width,fwCanvas.height); }
+            if(!fwRunning){ 
+                if(fwCtx && fwCanvas) fwCtx.clearRect(0,0,fwCanvas.width,fwCanvas.height); 
+            }
         }
         
         // ========== KHỞI CHẠY ==========
-        // Đợi DOM ready
         if (document.readyState === 'loading') {
             document.addEventListener('DOMContentLoaded', init);
         } else {
