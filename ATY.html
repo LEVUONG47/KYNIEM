@@ -339,6 +339,7 @@
             'https://raw.githubusercontent.com/LEVUONG47/KYNIEM/main/Tr%E1%BA%A1m%20D%E1%BB%ABng%20Ch%C3%A2n%20(WM%20Remix)-Jack%20-%20J97.mp3',
             'https://levuong47.github.io/KYNIEM/Tram%20Dung%20Chan%20(WM%20Remix)-Jack%20-%20J97.mp3'
         ];
+        const DATA_MUSIC_FALLBACK = 'data:audio/mpeg;base64,//uQZAAAAAAAAAAAAAAAAAAAAAAAWGluZwAAAA8AAAACAAACcQAEAAACAAACcQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//sQZAAAAAABNAAAAgAAAACAAADSAAAAAgAAAANAAAABAAACgAAAEZhbGxiYWNrIEJlZXA=';
         let musicIndex = 0;
         let debugVisible = false;
         
@@ -717,6 +718,7 @@
             music.src = MUSIC_SOURCES[musicIndex];
             music.load();
             logStatus('audio:src='+music.src);
+            probeCanPlay();
         }
 
         function nextMusicSource(){
@@ -725,4 +727,25 @@
                 setMusicSource(next);
                 ensureAutoplay();
             }
+            if(next === 0){
+                // Nếu vòng lặp quay lại đầu mà vẫn lỗi, dùng data URI fallback
+                const music = document.getElementById('music');
+                music.src = DATA_MUSIC_FALLBACK;
+                music.load();
+                logStatus('audio:src=data-fallback');
+                ensureAutoplay();
+            }
+        }
+
+        let probeTimer;
+        function probeCanPlay(){
+            clearTimeout(probeTimer);
+            probeTimer = setTimeout(()=>{
+                logStatus('audio:probe-timeout');
+                nextMusicSource();
+            }, 5000);
+            const music = document.getElementById('music');
+            const ok = ()=>{ clearTimeout(probeTimer); logStatus('audio:canplay-ok'); };
+            music.addEventListener('canplay', ok, { once:true });
+            music.addEventListener('canplaythrough', ok, { once:true });
         }
