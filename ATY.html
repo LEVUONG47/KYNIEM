@@ -308,6 +308,7 @@
         /* CẢI THIỆN MAIN CONTENT */
         .content-section {
             padding: 3rem 1.5rem;
+            padding-bottom: 6rem;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
@@ -1386,7 +1387,7 @@
             
             document.getElementById(sections[currentSection]).scrollIntoView({
                 behavior: 'smooth',
-                block: 'center'
+                block: 'start'
             });
             
             setTimeout(autoScrollToNext, 30000);
